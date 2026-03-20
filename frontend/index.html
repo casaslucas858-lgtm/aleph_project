@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ALEPH - Olimpiada de Fundamentos Matemáticos</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>ALEPH</h1>
+            <p class="tagline">No es cuánto sabés, es qué tan profundo</p>
+        </header>
+
+        <main>
+            <section class="hero">
+                <h2>Olimpiada de Fundamentos Matemáticos</h2>
+                <p>Sistema de progresión: π → e → ℵ</p>
+            </section>
+
+            <section class="levels">
+                <div class="level-card">
+                    <h3>π (PI) - Lineal</h3>
+                    <p>Matemática secundaria → Fundamentos formales</p>
+                    <ul>
+                        <li>π=3: Matemática básica</li>
+                        <li>π=3.1: Matemática de examen</li>
+                        <li>π=3.14: Avanzada</li>
+                        <li>π=3.141: Canguro entrada</li>
+                        <li>π=3.1415: Canguro avanzado</li>
+                    </ul>
+                    <p class="progression">Auto-promoción: 70-80% correcto</p>
+                </div>
+
+                <div class="level-card">
+                    <h3>e (EULER) - Competitivo</h3>
+                    <p>Olimpiada avanzada → Matemática formal</p>
+                    <ul>
+                        <li>e=2: Construcciones formales (Peano, ℤ, ℚ)</li>
+                        <li>e=2.7: Pre-Aleph (Gödel, ZFC)</li>
+                    </ul>
+                    <p class="progression">Top 50 mensuales → promoción a ℵ</p>
+                </div>
+
+                <div class="level-card">
+                    <h3>ℵ (ALEPH) - Élite</h3>
+                    <p>Club de matemática avanzada</p>
+                    <ul>
+                        <li>ELO dual: Math + Algoritmos</li>
+                        <li>Problema de la semana</li>
+                        <li>Duelos 1v1 opcionales</li>
+                        <li>Torneos mensuales</li>
+                    </ul>
+                    <p class="progression">Membresía permanente</p>
+                </div>
+            </section>
+
+            <section class="auth">
+                <div class="auth-container">
+                    <div class="auth-tabs">
+                        <button class="tab active" onclick="showLogin()">Iniciar Sesión</button>
+                        <button class="tab" onclick="showRegister()">Registrarse</button>
+                    </div>
+
+                    <form id="loginForm" class="auth-form">
+                        <input type="text" id="loginUsername" placeholder="Usuario" required>
+                        <input type="password" id="loginPassword" placeholder="Contraseña" required>
+                        <button type="submit">Entrar</button>
+                        <p class="error" id="loginError"></p>
+                    </form>
+
+                    <form id="registerForm" class="auth-form" style="display: none;">
+                        <input type="text" id="registerUsername" placeholder="Usuario" required>
+                        <input type="email" id="registerEmail" placeholder="Email" required>
+                        <input type="password" id="registerPassword" placeholder="Contraseña" required>
+                        <button type="submit">Crear Cuenta</button>
+                        <p class="error" id="registerError"></p>
+                    </form>
+                </div>
+            </section>
+        </main>
+
+        <footer>
+            <p>ALEPH © 2026 | Matemática rigurosa, progresión honesta</p>
+        </footer>
+    </div>
+
+    <script src="js/app.js"></script>
+</body>
+</html>
