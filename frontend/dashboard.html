@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - ALEPH</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="header-content">
+                <h1>ALEPH</h1>
+                <div class="user-info">
+                    <span id="username"></span>
+                    <span id="userLevel" class="level-badge"></span>
+                    <button onclick="logout()">Salir</button>
+                </div>
+            </div>
+        </header>
+
+        <main>
+            <section class="stats">
+                <div class="stat-card">
+                    <h3>Nivel Actual</h3>
+                    <p id="currentLevel" class="stat-value"></p>
+                </div>
+                <div class="stat-card">
+                    <h3>Problemas Resueltos</h3>
+                    <p id="solvedCount" class="stat-value">0</p>
+                </div>
+                <div class="stat-card">
+                    <h3>Precisión</h3>
+                    <p id="accuracy" class="stat-value">0%</p>
+                </div>
+            </section>
+
+            <section class="problems">
+                <h2>Problemas Disponibles</h2>
+                <div class="filter">
+                    <label>Filtrar por nivel:</label>
+                    <select id="levelFilter" onchange="loadProblems()">
+                        <option value="pi=3">π=3</option>
+                        <option value="pi=3.1">π=3.1</option>
+                        <option value="pi=3.14">π=3.14</option>
+                        <option value="pi=3.141">π=3.141</option>
+                        <option value="pi=3.1415">π=3.1415</option>
+                        <option value="e=2">e=2</option>
+                        <option value="e=2.7">e=2.7</option>
+                    </select>
+                </div>
+                <div id="problemList" class="problem-list">
+                    <!-- Problems loaded here -->
+                </div>
+            </section>
+
+            <section class="problem-view" id="problemView" style="display: none;">
+                <button onclick="closeProblem()" class="back-btn">← Volver</button>
+                <h2 id="problemTitle"></h2>
+                <div id="problemStatement" class="problem-statement"></div>
+                <form id="answerForm" class="answer-form">
+                    <input type="text" id="answerInput" placeholder="Tu respuesta" required>
+                    <button type="submit">Enviar</button>
+                </form>
+                <div id="result" class="result"></div>
+            </section>
+
+            <section class="submissions">
+                <h2>Tus Intentos Recientes</h2>
+                <div id="submissionsList" class="submissions-list">
+                    <!-- Submissions loaded here -->
+                </div>
+            </section>
+        </main>
+
+        <footer>
+            <p>ALEPH © 2026 | No es cuánto sabés, es qué tan profundo</p>
+        </footer>
+    </div>
+
+    <script src="js/app.js"></script>
+    <script>
+        // Check if logged in
+        if (!localStorage.getItem('token')) {
+            window.location.href = 'index.html';
+        }
+
+        // Load user data on page load
+        window.addEventListener('DOMContentLoaded', () => {
+            loadUserData();
+            loadProblems();
+            loadSubmissions();
+        });
+    </script>
+</body>
+</html>
