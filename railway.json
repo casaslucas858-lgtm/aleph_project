@@ -10,40 +10,4 @@
     "restartPolicyMaxRetries": 10
   }
 }
-```
 
-**Commit:** `fix: add Railway configuration file`
-
----
-
-## **ALTERNATIVA MÁS SIMPLE:**
-
-**Railway detecta automáticamente con archivos específicos.**
-
-**El problema es que `requirements.txt` está en `backend/`**
-
----
-
-### **OPCIÓN A: MOVER `requirements.txt` A RAÍZ**
-
-**En GitHub:**
-
-**Ir a:** `backend/requirements.txt`
-
-**Click los 3 puntos → Move file**
-
-**Nueva ruta:** `requirements.txt` (raíz del proyecto)
-
-**Commit**
-
----
-
-**DESPUÉS en Railway:**
-
-**Settings → Deploy**
-
-**Root Directory:** (dejarlo vacío)
-
-**Start Command:**
-```
-cd backend && uvicorn main:app --host 0.0.0.0 --port $PORT
