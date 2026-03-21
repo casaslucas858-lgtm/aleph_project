@@ -2,7 +2,7 @@ from fastapi import FastAPI, HTTPException, Depends
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from pydantic import BaseModel
-from typing import List, Optional
+from typing import Optional
 from datetime import datetime, timedelta
 from pathlib import Path
 import jwt
@@ -15,7 +15,7 @@ DB_PATH = BASE_DIR / "database.db"
 
 app = FastAPI(title="ALEPH API")
 
-# Middleware para CORS (necesario para conectar con el frontend)
+# Middleware para CORS
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -46,7 +46,7 @@ class UserLogin(BaseModel):
 
 class Problem(BaseModel):
     id: Optional[int] = None
-    level: str  # pi=3, pi=3.1, etc
+    level: str
     title: str
     statement: str
     answer: Optional[str] = None
@@ -112,8 +112,10 @@ def init_db():
     db.commit()
     db.close()
 
-# Ejecutamos la creación de tablas al cargar el script
-init_db()
+# Evento de startup
+@app.on_event("startup")
+async def startup_event():
+    init_db()
 
 # --- RUTAS ---
 @app.get("/")
@@ -132,7 +134,8 @@ async def register(user: UserRegister):
         )
         db.commit()
         user_id = cursor.lastrowid
-        return {"token": create_token(user_id), "username": user.username}
+        token = create_token(user_id)
+        return {"token": token, "username": user.username}
     except sqlite3.IntegrityError:
         raise HTTPException(status_code=400, detail="El usuario o email ya existe")
     finally:
@@ -191,7 +194,6 @@ async def submit(submission: Submission, user_id: int = Depends(verify_token)):
 
 @app.post("/admin/problem")
 async def create_problem(problem: Problem):
-    # Nota: Aquí deberías agregar una validación de admin real en el futuro
     db = get_db()
     cursor = db.cursor()
     cursor.execute(
