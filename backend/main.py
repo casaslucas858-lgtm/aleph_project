@@ -53,6 +53,8 @@ class Submission(BaseModel):
 
 # Auth
 def hash_password(password: str) -> str:
+    # Simple hash para beta - CAMBIAR en producción
+    import hashlib
     return hashlib.sha256(password.encode()).hexdigest()
 
 def create_token(user_id: int) -> str:
