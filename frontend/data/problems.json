@@ -1,0 +1,117 @@
+{
+  "pi=3": [
+    {
+      "id": 1,
+      "level": "pi=3",
+      "title": "Par + Par = Par",
+      "statement": "Demostrá que si sumás dos números pares, el resultado siempre es par.",
+      "answer": "2a+2b=2(a+b)"
+    },
+    {
+      "id": 2,
+      "level": "pi=3",
+      "title": "Múltiplos de 5",
+      "statement": "¿Es verdad que todo número que termina en 0 o 5 es múltiplo de 5? Justificá sin usar ejemplos.",
+      "answer": "10k=5(2k) o 10k+5=5(2k+1)"
+    },
+    {
+      "id": 3,
+      "level": "pi=3",
+      "title": "Tres consecutivos",
+      "statement": "Demostrá que en cualquier grupo de 3 números enteros consecutivos, al menos uno es múltiplo de 3.",
+      "answer": "n,n+1,n+2 casos 3k o 3k+1 o 3k+2"
+    }
+  ],
+  "pi=3.1": [
+    {
+      "id": 4,
+      "level": "pi=3.1",
+      "title": "Suma de impares",
+      "statement": "Demostrá que la suma de los primeros n números impares es n².",
+      "answer": "induccion base n=1 paso sumar 2n+1"
+    },
+    {
+      "id": 5,
+      "level": "pi=3.1",
+      "title": "Raíces enteras",
+      "statement": "Si x²-kx+4=0 tiene una solución entera, ¿qué valores enteros puede tomar k?",
+      "answer": "5,4,-5,-4"
+    },
+    {
+      "id": 6,
+      "level": "pi=3.1",
+      "title": "Negación lógica",
+      "statement": "Escribí la negación de: 'Para todo x, existe y tal que x+y=0'",
+      "answer": "existe x para todo y x+y distinto 0"
+    }
+  ],
+  "pi=3.14": [
+    {
+      "id": 7,
+      "level": "pi=3.14",
+      "title": "Desigualdad AM-GM",
+      "statement": "Demostrá que para a,b > 0, se cumple (a+b)/2 ≥ √(ab)",
+      "answer": "(a-b)²≥0 entonces (a+b)²≥4ab"
+    },
+    {
+      "id": 8,
+      "level": "pi=3.14",
+      "title": "Diagonales del pentágono",
+      "statement": "¿Cuántas diagonales tiene un pentágono? Justificá.",
+      "answer": "5"
+    },
+    {
+      "id": 9,
+      "level": "pi=3.14",
+      "title": "Principio del palomar",
+      "statement": "En un grupo de 13 personas, al menos 2 cumplen años el mismo mes. ¿Por qué?",
+      "answer": "13 personas 12 meses palomar"
+    }
+  ],
+  "pi=3.141": [
+    {
+      "id": 10,
+      "level": "pi=3.141",
+      "title": "Infinitos primos",
+      "statement": "Demostrá que existen infinitos números primos.",
+      "answer": "euclides suponer finitos N=producto+1"
+    },
+    {
+      "id": 11,
+      "level": "pi=3.141",
+      "title": "√2 irracional",
+      "statement": "Demostrá que √2 no se puede escribir como fracción p/q con p,q enteros.",
+      "answer": "contradiccion p/q irreducible entonces p par q par"
+    },
+    {
+      "id": 12,
+      "level": "pi=3.141",
+      "title": "Suma de ángulos",
+      "statement": "Demostrá que la suma de ángulos internos de un triángulo es 180°.",
+      "answer": "paralela angulos alternos internos"
+    }
+  ],
+  "pi=3.1415": [
+    {
+      "id": 13,
+      "level": "pi=3.1415",
+      "title": "Construcción de ℤ",
+      "statement": "Explicá cómo construir los enteros negativos a partir de los naturales usando pares ordenados.",
+      "answer": "(a,b) representa a-b equivalencia"
+    },
+    {
+      "id": 14,
+      "level": "pi=3.1415",
+      "title": "Límite 1/n→0",
+      "statement": "Demostrá que lim(n→∞) 1/n = 0 usando la definición ε-N para sucesiones.",
+      "answer": "dado epsilon tomar N>1/epsilon"
+    },
+    {
+      "id": 15,
+      "level": "pi=3.1415",
+      "title": "Cardinalidad ℕ vs pares",
+      "statement": "¿Hay la misma cantidad de números naturales que de números pares? Justificá.",
+      "answer": "si biyeccion f(n)=2n"
+    }
+  ]
+}
