@@ -317,13 +317,13 @@ function loadSubmissions() {
         </div>
     `).join('');
 }
-
+// Initialize dashboard
 if (window.location.pathname.includes('dashboard.html')) {
     window.addEventListener('DOMContentLoaded', async () => {
         console.log('Dashboard loading...');
         await loadProblemsData();
-        loadUserData();
-        loadProblems();
+        await loadUserData();
+        await loadProblems();
         loadSubmissions();
     });
 }
