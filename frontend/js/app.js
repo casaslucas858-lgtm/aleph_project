@@ -8,7 +8,7 @@ async function loadProblemsData() {
         const response = await fetch('./data/problems.json');
         if (!response.ok) throw new Error("No se pudo cargar el JSON");
         problems = await response.json();
-        console.log("Problemas cargados con éxito.");
+        console.log("Problemas cargados:", problems);
     } catch (error) {
         console.error("Error cargando problemas:", error);
         problems = {
@@ -105,7 +105,7 @@ function renderSubmissions() {
 
     list.innerHTML = user.submissions.slice(-10).reverse().map(sub => `
         <div class="submission-item ${sub.correct ? 'correct' : 'incorrect'}">
-            <div><strong>${sub.title}</strong></div>
+            <div><strong>${sub.title || 'Problema'}</strong></div>
             <div>${sub.correct ? '✓ Correcto' : '✗ Incorrecto'}</div>
         </div>
     `).join('');
@@ -124,6 +124,8 @@ function openProblem(id) {
 
     document.getElementById('problemTitle').textContent = problem.title;
     document.getElementById('problemStatement').textContent = problem.statement;
+    document.getElementById('result').textContent = '';
+    document.getElementById('answerInput').value = '';
     document.getElementById('problemView').style.display = 'block';
     document.querySelector('.problems').style.display = 'none';
     document.querySelector('.submissions').style.display = 'none';
@@ -135,7 +137,7 @@ function closeProblem() {
     document.querySelector('.submissions').style.display = 'block';
 }
 
-// ========== 5. EL NUEVO MOTOR DE VALIDACIÓN (SCORING) ==========
+// ========== 5. MOTOR DE VALIDACIÓN ==========
 function handleSubmission(e) {
     e.preventDefault();
     const answerInput = document.getElementById('answerInput');
@@ -151,10 +153,10 @@ function handleSubmission(e) {
     }
     if (!problem) return;
 
-    const rawInput = answerInput.value.trim().toLowerCase();
+    const rawInput = answerInput.value.trim();
 
-    // --- NORMALIZACIÓN ---
-    const normalize = (text) => text
+    // Normalización
+    const normalize = (text) => text.toLowerCase()
         .replace(/\s+/g, ' ')
         .replace(/[áàäâ]/g, 'a')
         .replace(/[éèëê]/g, 'e')
@@ -166,11 +168,11 @@ function handleSubmission(e) {
     const correctAnswer = normalize(problem.answer);
     const userAnswer = normalize(rawInput);
 
-    // --- ANTI-KEYWORDS ---
+    // Anti-keywords
     const antiKeywords = ['no es', 'falso', 'incorrecto', 'placeholder', 'hola', 'test', 'banana', 'asdf', 'qwerty'];
     const hasAntiKeyword = antiKeywords.some(bad => userAnswer.includes(bad));
 
-    // --- KEYWORDS OBLIGATORIAS ---
+    // Keywords obligatorias por problema
     const requiredKeywords = {
         1: ['2a', '2b', 'par'],
         2: ['10k', '5', '2k'],
@@ -193,53 +195,60 @@ function handleSubmission(e) {
     const matchedKeywords = required.filter(kw => userAnswer.includes(kw)).length;
     const hasEnoughKeywords = required.length === 0 || matchedKeywords >= Math.ceil(required.length * 0.5);
 
-    // --- SCORING ---
+    // Scoring
     let score = 0;
     if (hasAntiKeyword) {
         score = 0;
+        console.log('❌ Rechazado: anti-keyword detectada');
     } else if (userAnswer === correctAnswer) {
         score = 100;
+        console.log('✓ Respuesta exacta');
     } else if (userAnswer.includes(correctAnswer)) {
         score = 95;
+        console.log('✓ Contiene respuesta exacta');
     } else if (hasEnoughKeywords) {
         const keywords = correctAnswer.split(' ').filter(w => w.length > 2);
         const matches = keywords.filter(w => userAnswer.includes(w)).length;
         const keywordScore = keywords.length > 0 ? (matches / keywords.length) * 60 : 60;
         const requiredScore = required.length > 0 ? (matchedKeywords / required.length) * 40 : 40;
         score = keywordScore + requiredScore;
+        console.log(`Parcial: ${matches}/${keywords.length} keywords, ${matchedKeywords}/${required.length} requeridas → ${score.toFixed(0)}%`);
+    } else {
+        score = 0;
+        console.log('❌ No cumple requisitos');
     }
 
     const isCorrect = score >= 60;
+    console.log(`Score final: ${score.toFixed(0)}% → ${isCorrect ? 'CORRECTA' : 'INCORRECTA'}`);
 
-    // --- GUARDAR RESULTADO ---
-// Mostrar resultado PRIMERO
-resultEl.className = "result " + (isCorrect ? "correct" : "incorrect");
-resultEl.textContent = isCorrect 
-    ? `✓ ¡Correcto! (Score: ${score.toFixed(0)}%)` 
-    : `✗ Incorrecto. (Score: ${score.toFixed(0)}%) Intentá de nuevo.`;
+    // Mostrar resultado
+    resultEl.className = "result " + (isCorrect ? "correct" : "incorrect");
+    resultEl.textContent = isCorrect 
+        ? `✓ ¡Correcto! (Score: ${score.toFixed(0)}%)` 
+        : `✗ Incorrecto (Score: ${score.toFixed(0)}%). Intentá de nuevo.`;
 
-// DESPUÉS guardar
-user.submissions.push({ 
-    problem_id: currentProblemId,
-    title: problem.title,
-    level: problem.level,
-    answer: answer,
-    correct: isCorrect,
-    score: Math.round(score)
-});
+    // Guardar
+    user.submissions.push({ 
+        problem_id: currentProblemId,
+        title: problem.title,
+        level: problem.level,
+        answer: rawInput,
+        correct: isCorrect,
+        score: Math.round(score)
+    });
 
-if (isCorrect && !user.solved.includes(currentProblemId)) {
-    user.solved.push(currentProblemId);
+    if (isCorrect && !user.solved.includes(currentProblemId)) {
+        user.solved.push(currentProblemId);
+    }
+
+    saveUser(user);
+    checkProgression(user);
+
+    setTimeout(() => {
+        updateUI();
+        renderSubmissions();
+    }, 500);
 }
-
-saveUser(user);
-checkProgression(user);
-
-// Actualizar UI después de un momento
-setTimeout(() => {
-    updateUI();
-    renderSubmissions();
-}, 500);
 
 function checkProgression(user) {
     const levels = ['pi=3', 'pi=3.1', 'pi=3.14', 'pi=3.141', 'pi=3.1415'];
@@ -257,12 +266,68 @@ function checkProgression(user) {
     }
 }
 
-// ========== 6. INICIALIZACIÓN ==========
+// ========== 6. LOGIN/REGISTER ==========
+function handleLogin(e) {
+    e.preventDefault();
+    const username = document.getElementById('loginUsername').value;
+    const password = document.getElementById('loginPassword').value;
+    const users = JSON.parse(localStorage.getItem('users') || '{}');
+
+    if (users[username] && users[username].password === password) {
+        localStorage.setItem('currentUser', username);
+        window.location.href = './dashboard.html';
+    } else {
+        document.getElementById('loginError').textContent = 'Credenciales incorrectas';
+    }
+    return false;
+}
+
+function handleRegister(e) {
+    e.preventDefault();
+    const username = document.getElementById('registerUsername').value;
+    const email = document.getElementById('registerEmail').value;
+    const password = document.getElementById('registerPassword').value;
+    const users = JSON.parse(localStorage.getItem('users') || '{}');
+
+    if (users[username]) {
+        document.getElementById('registerError').textContent = 'Usuario ya existe';
+        return false;
+    }
+
+    users[username] = { email, password, level: 'pi=3', solved: [], submissions: [] };
+    localStorage.setItem('users', JSON.stringify(users));
+    localStorage.setItem('currentUser', username);
+    window.location.href = './dashboard.html';
+    return false;
+}
+
+function showLogin() {
+    document.getElementById('loginForm').style.display = 'flex';
+    document.getElementById('registerForm').style.display = 'none';
+    document.querySelectorAll('.tab')[0].classList.add('active');
+    document.querySelectorAll('.tab')[1].classList.remove('active');
+}
+
+function showRegister() {
+    document.getElementById('loginForm').style.display = 'none';
+    document.getElementById('registerForm').style.display = 'flex';
+    document.querySelectorAll('.tab')[0].classList.remove('active');
+    document.querySelectorAll('.tab')[1].classList.add('active');
+}
+
+function logout() {
+    localStorage.removeItem('currentUser');
+    window.location.href = './index.html';
+}
+
+// ========== 7. INICIALIZACIÓN ==========
 async function init() {
+    console.log('Iniciando ALEPH...');
     if (!checkAuth()) return;
     await loadProblemsData();
 
     if (window.location.pathname.includes('dashboard.html')) {
+        console.log('Inicializando dashboard...');
         updateUI();
         renderProblems();
         renderSubmissions();
@@ -271,4 +336,8 @@ async function init() {
     }
 }
 
-document.addEventListener('DOMContentLoaded', init);
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init);
+} else {
+    init();
+}
