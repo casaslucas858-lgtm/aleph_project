@@ -63,14 +63,14 @@
                         <button class="tab" onclick="showRegister()">Registrarse</button>
                     </div>
 
-                    <form id="loginForm" class="auth-form">
+                  <form id="loginForm" class="auth-form" onsubmit="return handleLogin(event)">
                         <input type="text" id="loginUsername" placeholder="Usuario" required>
                         <input type="password" id="loginPassword" placeholder="Contraseña" required>
                         <button type="submit">Entrar</button>
                         <p class="error" id="loginError"></p>
                     </form>
 
-                    <form id="registerForm" class="auth-form" style="display: none;">
+                 <form id="registerForm" class="auth-form" style="display: none;" onsubmit="return handleRegister(event)">
                         <input type="text" id="registerUsername" placeholder="Usuario" required>
                         <input type="email" id="registerEmail" placeholder="Email" required>
                         <input type="password" id="registerPassword" placeholder="Contraseña" required>
