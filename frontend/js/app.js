@@ -33,12 +33,10 @@ async function loadProblemsData() {
     }
 }
 
-// Initialize
-loadProblemsData();
-
 // ========== AUTH (FAKE) ==========
 
 function showLogin() {
+    if (!document.getElementById('loginForm')) return;
     document.getElementById('loginForm').style.display = 'flex';
     document.getElementById('registerForm').style.display = 'none';
     document.querySelectorAll('.tab')[0].classList.add('active');
@@ -46,6 +44,7 @@ function showLogin() {
 }
 
 function showRegister() {
+    if (!document.getElementById('registerForm')) return;
     document.getElementById('loginForm').style.display = 'none';
     document.getElementById('registerForm').style.display = 'flex';
     document.querySelectorAll('.tab')[0].classList.remove('active');
@@ -119,16 +118,27 @@ function logout() {
     window.location.href = 'index.html';
 }
 
-// ========== DASHBOARD ==========
+// ========== DASHBOARD FUNCTIONS (ONLY RUN ON DASHBOARD) ==========
 
 function getCurrentUser() {
     const username = localStorage.getItem('currentUser');
+    console.log('getCurrentUser - username:', username);
+    
     if (!username) {
+        console.log('No username found, redirecting...');
         window.location.href = 'index.html';
         return null;
     }
     
     const users = JSON.parse(localStorage.getItem('users') || '{}');
+    console.log('getCurrentUser - user exists:', !!users[username]);
+    
+    if (!users[username]) {
+        console.log('User data not found, redirecting...');
+        window.location.href = 'index.html';
+        return null;
+    }
+    
     return { username, ...users[username] };
 }
 
@@ -144,27 +154,37 @@ function saveUser(user) {
     localStorage.setItem('users', JSON.stringify(users));
 }
 
-async function loadUserData() {
+function loadUserData() {
     const user = getCurrentUser();
     if (!user) return;
     
-    document.getElementById('username').textContent = user.username;
-    document.getElementById('userLevel').textContent = user.level;
-    document.getElementById('currentLevel').textContent = user.level;
+    const usernameEl = document.getElementById('username');
+    const userLevelEl = document.getElementById('userLevel');
+    const currentLevelEl = document.getElementById('currentLevel');
+    const solvedCountEl = document.getElementById('solvedCount');
+    const accuracyEl = document.getElementById('accuracy');
+    
+    if (usernameEl) usernameEl.textContent = user.username;
+    if (userLevelEl) userLevelEl.textContent = user.level;
+    if (currentLevelEl) currentLevelEl.textContent = user.level;
     
     const solved = user.solved.length;
     const total = user.submissions.length;
     const accuracy = total > 0 ? Math.round((solved / total) * 100) : 0;
     
-    document.getElementById('solvedCount').textContent = solved;
-    document.getElementById('accuracy').textContent = accuracy + '%';
+    if (solvedCountEl) solvedCountEl.textContent = solved;
+    if (accuracyEl) accuracyEl.textContent = accuracy + '%';
 }
 
-async function loadProblems() {
+function loadProblems() {
     console.log('loadProblems called, current problems:', problems);
     
-    const level = document.getElementById('levelFilter')?.value || 'pi=3';
+    const levelFilter = document.getElementById('levelFilter');
     const problemList = document.getElementById('problemList');
+    
+    if (!levelFilter || !problemList) return;
+    
+    const level = levelFilter.value || 'pi=3';
     
     if (!problems[level] || problems[level].length === 0) {
         problemList.innerHTML = '<p style="text-align: center; padding: 40px; color: #999;">No hay problemas disponibles en este nivel.</p>';
@@ -193,28 +213,46 @@ function openProblem(id) {
         return;
     }
     
-    document.getElementById('problemTitle').textContent = problem.title;
-    document.getElementById('problemStatement').textContent = problem.statement;
-    document.getElementById('result').innerHTML = '';
-    document.getElementById('answerInput').value = '';
+    const problemTitle = document.getElementById('problemTitle');
+    const problemStatement = document.getElementById('problemStatement');
+    const result = document.getElementById('result');
+    const answerInput = document.getElementById('answerInput');
     
-    document.querySelector('.problems').style.display = 'none';
-    document.querySelector('.submissions').style.display = 'none';
-    document.getElementById('problemView').style.display = 'block';
+    if (problemTitle) problemTitle.textContent = problem.title;
+    if (problemStatement) problemStatement.textContent = problem.statement;
+    if (result) result.innerHTML = '';
+    if (answerInput) answerInput.value = '';
+    
+    const problemsSection = document.querySelector('.problems');
+    const submissionsSection = document.querySelector('.submissions');
+    const problemView = document.getElementById('problemView');
+    
+    if (problemsSection) problemsSection.style.display = 'none';
+    if (submissionsSection) submissionsSection.style.display = 'none';
+    if (problemView) problemView.style.display = 'block';
 }
 
 function closeProblem() {
-    document.getElementById('problemView').style.display = 'none';
-    document.querySelector('.problems').style.display = 'block';
-    document.querySelector('.submissions').style.display = 'block';
+    const problemView = document.getElementById('problemView');
+    const problemsSection = document.querySelector('.problems');
+    const submissionsSection = document.querySelector('.submissions');
+    
+    if (problemView) problemView.style.display = 'none';
+    if (problemsSection) problemsSection.style.display = 'block';
+    if (submissionsSection) submissionsSection.style.display = 'block';
 }
 
-document.getElementById('answerForm')?.addEventListener('submit', (e) => {
+function handleSubmit(e) {
     e.preventDefault();
     
-    const answer = document.getElementById('answerInput').value.trim().toLowerCase();
+    const answerInput = document.getElementById('answerInput');
     const resultEl = document.getElementById('result');
+    
+    if (!answerInput || !resultEl) return;
+    
+    const answer = answerInput.value.trim().toLowerCase();
     const user = getCurrentUser();
+    if (!user) return;
     
     let problem = null;
     for (const level in problems) {
@@ -269,7 +307,7 @@ document.getElementById('answerForm')?.addEventListener('submit', (e) => {
         loadUserData();
         loadSubmissions();
     }, 1000);
-});
+}
 
 function checkProgression(user) {
     const levels = ['pi=3', 'pi=3.1', 'pi=3.14', 'pi=3.141', 'pi=3.1415'];
@@ -297,6 +335,7 @@ function loadSubmissions() {
     if (!user) return;
     
     const submissionsList = document.getElementById('submissionsList');
+    if (!submissionsList) return;
     
     if (user.submissions.length === 0) {
         submissionsList.innerHTML = '<p style="text-align: center; padding: 20px; color: #999;">Todavía no hiciste ningún intento.</p>';
@@ -317,13 +356,38 @@ function loadSubmissions() {
         </div>
     `).join('');
 }
-// Initialize dashboard
+
+// ========== INITIALIZE ==========
+
+// Load problems on page load
+loadProblemsData();
+
+// Initialize dashboard ONLY if on dashboard page
 if (window.location.pathname.includes('dashboard.html')) {
+    console.log('Dashboard page detected, initializing...');
+    
     window.addEventListener('DOMContentLoaded', async () => {
-        console.log('Dashboard loading...');
-        await loadProblemsData();
-        await loadUserData();
-        await loadProblems();
+        console.log('DOM loaded, setting up dashboard...');
+        
+        // Ensure problems are loaded
+        if (Object.keys(problems).length === 0) {
+            await loadProblemsData();
+        }
+        
+        // Load dashboard data
+        loadUserData();
+        loadProblems();
         loadSubmissions();
+        
+        // Attach event listeners
+        const answerForm = document.getElementById('answerForm');
+        if (answerForm) {
+            answerForm.addEventListener('submit', handleSubmit);
+        }
+        
+        const levelFilter = document.getElementById('levelFilter');
+        if (levelFilter) {
+            levelFilter.addEventListener('change', loadProblems);
+        }
     });
 }
