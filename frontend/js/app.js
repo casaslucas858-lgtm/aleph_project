@@ -1,145 +1,33 @@
-// FRONTEND-ONLY VERSION - No backend needed
-// All data stored in localStorage
-
+// FRONTEND-ONLY VERSION - ALEPH PROJECT
+// Configuración global
 let problems = {};
 let currentProblemId = null;
 
-// Load problems from JSON
+// ========== 1. CARGA DE PROBLEMAS ==========
 async function loadProblemsData() {
     try {
-        console.log('Attempting to load problems...');
-        const response = await fetch('/aleph_project/frontend/data/problems.json');
-        console.log('Response status:', response.status);
-        
-        if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        
+        const response = await fetch('./data/problems.json');
+        if (!response.ok) throw new Error("No se pudo cargar el JSON");
         problems = await response.json();
-        console.log('Problems loaded successfully:', problems);
+        console.log("Problemas cargados:", problems);
     } catch (error) {
-        console.error('Error loading problems:', error);
-        
-        // Try alternative path
-        try {
-            console.log('Trying alternative path...');
-            const response2 = await fetch('./data/problems.json');
-            problems = await response2.json();
-            console.log('Problems loaded from alternative path:', problems);
-        } catch (error2) {
-            console.error('Alternative path also failed:', error2);
-            problems = {};
-        }
+        console.error("Error cargando problemas:", error);
+        // Fallback
+        problems = {
+            "pi=3": [
+                { id: 1, title: "Suma Básica", statement: "¿Cuánto es 2 + 2?", answer: "4", level: "pi=3" }
+            ]
+        };
     }
 }
 
-// ========== AUTH (FAKE) ==========
-
-function showLogin() {
-    if (!document.getElementById('loginForm')) return;
-    document.getElementById('loginForm').style.display = 'flex';
-    document.getElementById('registerForm').style.display = 'none';
-    document.querySelectorAll('.tab')[0].classList.add('active');
-    document.querySelectorAll('.tab')[1].classList.remove('active');
-}
-
-function showRegister() {
-    if (!document.getElementById('registerForm')) return;
-    document.getElementById('loginForm').style.display = 'none';
-    document.getElementById('registerForm').style.display = 'flex';
-    document.querySelectorAll('.tab')[0].classList.remove('active');
-    document.querySelectorAll('.tab')[1].classList.add('active');
-}
-
-// Login (fake)
-document.getElementById('loginForm')?.addEventListener('submit', async (e) => {
-    e.preventDefault();
-    
-    const username = document.getElementById('loginUsername').value;
-    const password = document.getElementById('loginPassword').value;
-    
-    const users = JSON.parse(localStorage.getItem('users') || '{}');
-    
-    if (!users[username]) {
-        document.getElementById('loginError').textContent = 'Usuario no existe';
-        return;
-    }
-    
-    if (users[username].password !== password) {
-        document.getElementById('loginError').textContent = 'Contraseña incorrecta';
-        return;
-    }
-    
-    localStorage.setItem('currentUser', username);
-    
-    if (Object.keys(problems).length === 0) {
-        await loadProblemsData();
-    }
-    
-    window.location.href = 'dashboard.html';
-});
-
-// Register (fake)
-document.getElementById('registerForm')?.addEventListener('submit', async (e) => {
-    e.preventDefault();
-    
-    const username = document.getElementById('registerUsername').value;
-    const email = document.getElementById('registerEmail').value;
-    const password = document.getElementById('registerPassword').value;
-    
-    const users = JSON.parse(localStorage.getItem('users') || '{}');
-    
-    if (users[username]) {
-        document.getElementById('registerError').textContent = 'Usuario ya existe';
-        return;
-    }
-    
-    users[username] = {
-        email: email,
-        password: password,
-        level: 'pi=3',
-        solved: [],
-        submissions: []
-    };
-    
-    localStorage.setItem('users', JSON.stringify(users));
-    localStorage.setItem('currentUser', username);
-    
-    if (Object.keys(problems).length === 0) {
-        await loadProblemsData();
-    }
-    
-    window.location.href = 'dashboard.html';
-});
-
-// Logout
-function logout() {
-    localStorage.removeItem('currentUser');
-    window.location.href = 'index.html';
-}
-
-// ========== DASHBOARD FUNCTIONS (ONLY RUN ON DASHBOARD) ==========
-
+// ========== 2. GESTIÓN DE USUARIOS ==========
 function getCurrentUser() {
     const username = localStorage.getItem('currentUser');
-    console.log('getCurrentUser - username:', username);
-    
-    if (!username) {
-        console.log('No username found, redirecting...');
-        window.location.href = 'index.html';
-        return null;
-    }
-    
+    if (!username) return null;
+
     const users = JSON.parse(localStorage.getItem('users') || '{}');
-    console.log('getCurrentUser - user exists:', !!users[username]);
-    
-    if (!users[username]) {
-        console.log('User data not found, redirecting...');
-        window.location.href = 'index.html';
-        return null;
-    }
-    
-    return { username, ...users[username] };
+    return users[username] ? { username, ...users[username] } : null;
 }
 
 function saveUser(user) {
@@ -147,89 +35,127 @@ function saveUser(user) {
     users[user.username] = {
         email: user.email,
         password: user.password,
-        level: user.level,
-        solved: user.solved,
-        submissions: user.submissions
+        level: user.level || 'pi=3',
+        solved: user.solved || [],
+        submissions: user.submissions || []
     };
     localStorage.setItem('users', JSON.stringify(users));
 }
 
-function loadUserData() {
+// ========== 3. NAVEGACIÓN Y AUTH ==========
+function checkAuth() {
+    const isDashboard = window.location.pathname.includes('dashboard.html');
+    const user = getCurrentUser();
+
+    if (isDashboard && !user) {
+        console.warn("Acceso denegado. Redirigiendo a login...");
+        window.location.href = './index.html';
+        return false;
+    }
+    
+    return true;
+}
+
+// ========== 4. UI DEL DASHBOARD ==========
+function updateUI() {
     const user = getCurrentUser();
     if (!user) return;
-    
+
     const usernameEl = document.getElementById('username');
     const userLevelEl = document.getElementById('userLevel');
     const currentLevelEl = document.getElementById('currentLevel');
     const solvedCountEl = document.getElementById('solvedCount');
     const accuracyEl = document.getElementById('accuracy');
-    
+
     if (usernameEl) usernameEl.textContent = user.username;
     if (userLevelEl) userLevelEl.textContent = user.level;
     if (currentLevelEl) currentLevelEl.textContent = user.level;
+    if (solvedCountEl) solvedCountEl.textContent = user.solved.length;
     
-    const solved = user.solved.length;
-    const total = user.submissions.length;
-    const accuracy = total > 0 ? Math.round((solved / total) * 100) : 0;
-    
-    if (solvedCountEl) solvedCountEl.textContent = solved;
+    const accuracy = user.submissions.length > 0 
+        ? Math.round((user.solved.length / user.submissions.length) * 100) 
+        : 0;
     if (accuracyEl) accuracyEl.textContent = accuracy + '%';
 }
 
-function loadProblems() {
-    console.log('loadProblems called, current problems:', problems);
-    
+function renderProblems() {
     const levelFilter = document.getElementById('levelFilter');
     const problemList = document.getElementById('problemList');
-    
     if (!levelFilter || !problemList) return;
-    
+
     const level = levelFilter.value || 'pi=3';
+    const levelProblems = problems[level] || [];
+
+    if (levelProblems.length === 0) {
+        problemList.innerHTML = '<p style="text-align: center; padding: 40px; color: #999;">No hay problemas en este nivel.</p>';
+        return;
+    }
+
+    problemList.innerHTML = levelProblems.map(p => `
+        <div class="problem-item" onclick="openProblem(${p.id})">
+            <span class="level-tag">${p.level}</span>
+            <h3>${p.title}</h3>
+        </div>
+    `).join('');
+}
+
+function renderSubmissions() {
+    const user = getCurrentUser();
+    if (!user) return;
     
-    if (!problems[level] || problems[level].length === 0) {
-        problemList.innerHTML = '<p style="text-align: center; padding: 40px; color: #999;">No hay problemas disponibles en este nivel.</p>';
+    const submissionsList = document.getElementById('submissionsList');
+    if (!submissionsList) return;
+    
+    if (user.submissions.length === 0) {
+        submissionsList.innerHTML = '<p style="text-align: center; padding: 20px; color: #999;">Todavía no hiciste ningún intento.</p>';
         return;
     }
     
-    problemList.innerHTML = problems[level].map(problem => `
-        <div class="problem-item" onclick="openProblem(${problem.id})">
-            <span class="level-tag">${problem.level}</span>
-            <h3>${problem.title}</h3>
+    const recentSubmissions = user.submissions.slice(-10).reverse();
+    
+    submissionsList.innerHTML = recentSubmissions.map(sub => `
+        <div class="submission-item ${sub.correct ? 'correct' : 'incorrect'}">
+            <div>
+                <strong>${sub.title || 'Problema #' + sub.problem_id}</strong>
+                <span style="color: #999; margin-left: 10px;">${sub.level || ''}</span>
+            </div>
+            <div>
+                ${sub.correct ? '✓ Correcto' : '✗ Incorrecto'}
+            </div>
         </div>
     `).join('');
 }
 
 function openProblem(id) {
     currentProblemId = id;
-    
     let problem = null;
-    for (const level in problems) {
-        problem = problems[level].find(p => p.id === id);
+    
+    for (const lvl in problems) {
+        problem = problems[lvl].find(p => p.id === id);
         if (problem) break;
     }
-    
+
     if (!problem) {
         alert('Problema no encontrado');
         return;
     }
-    
+
     const problemTitle = document.getElementById('problemTitle');
     const problemStatement = document.getElementById('problemStatement');
-    const result = document.getElementById('result');
-    const answerInput = document.getElementById('answerInput');
-    
-    if (problemTitle) problemTitle.textContent = problem.title;
-    if (problemStatement) problemStatement.textContent = problem.statement;
-    if (result) result.innerHTML = '';
-    if (answerInput) answerInput.value = '';
-    
+    const problemView = document.getElementById('problemView');
     const problemsSection = document.querySelector('.problems');
     const submissionsSection = document.querySelector('.submissions');
-    const problemView = document.getElementById('problemView');
+    const resultEl = document.getElementById('result');
+    const answerInput = document.getElementById('answerInput');
+
+    if (problemTitle) problemTitle.textContent = problem.title;
+    if (problemStatement) problemStatement.textContent = problem.statement;
+    if (resultEl) resultEl.textContent = '';
+    if (answerInput) answerInput.value = '';
     
+    if (problemView) problemView.style.display = 'block';
     if (problemsSection) problemsSection.style.display = 'none';
     if (submissionsSection) submissionsSection.style.display = 'none';
-    if (problemView) problemView.style.display = 'block';
 }
 
 function closeProblem() {
@@ -242,12 +168,86 @@ function closeProblem() {
     if (submissionsSection) submissionsSection.style.display = 'block';
 }
 
-function handleSubmit(e) {
+// ========== 5. LOGIN / REGISTER ==========
+const loginForm = document.getElementById('loginForm');
+if (loginForm) {
+    loginForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const username = document.getElementById('loginUsername').value;
+        const password = document.getElementById('loginPassword').value;
+        const users = JSON.parse(localStorage.getItem('users') || '{}');
+
+        if (users[username] && users[username].password === password) {
+            localStorage.setItem('currentUser', username);
+            window.location.href = './dashboard.html';
+        } else {
+            const errorEl = document.getElementById('loginError');
+            if (errorEl) errorEl.textContent = 'Usuario o contraseña incorrectos';
+        }
+    });
+}
+
+const registerForm = document.getElementById('registerForm');
+if (registerForm) {
+    registerForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const username = document.getElementById('registerUsername').value;
+        const email = document.getElementById('registerEmail').value;
+        const password = document.getElementById('registerPassword').value;
+        const users = JSON.parse(localStorage.getItem('users') || '{}');
+
+        if (users[username]) {
+            const errorEl = document.getElementById('registerError');
+            if (errorEl) errorEl.textContent = 'El usuario ya existe';
+            return;
+        }
+
+        users[username] = { 
+            email, 
+            password, 
+            level: 'pi=3', 
+            solved: [], 
+            submissions: [] 
+        };
+        localStorage.setItem('users', JSON.stringify(users));
+        localStorage.setItem('currentUser', username);
+        window.location.href = './dashboard.html';
+    });
+}
+
+function showLogin() {
+    const loginForm = document.getElementById('loginForm');
+    const registerForm = document.getElementById('registerForm');
+    if (loginForm) loginForm.style.display = 'flex';
+    if (registerForm) registerForm.style.display = 'none';
+    
+    const tabs = document.querySelectorAll('.tab');
+    if (tabs[0]) tabs[0].classList.add('active');
+    if (tabs[1]) tabs[1].classList.remove('active');
+}
+
+function showRegister() {
+    const loginForm = document.getElementById('loginForm');
+    const registerForm = document.getElementById('registerForm');
+    if (loginForm) loginForm.style.display = 'none';
+    if (registerForm) registerForm.style.display = 'flex';
+    
+    const tabs = document.querySelectorAll('.tab');
+    if (tabs[0]) tabs[0].classList.remove('active');
+    if (tabs[1]) tabs[1].classList.add('active');
+}
+
+function logout() {
+    localStorage.removeItem('currentUser');
+    window.location.href = './index.html';
+}
+
+// ========== 6. SUBMIT ANSWER ==========
+function handleSubmission(e) {
     e.preventDefault();
     
     const answerInput = document.getElementById('answerInput');
     const resultEl = document.getElementById('result');
-    
     if (!answerInput || !resultEl) return;
     
     const answer = answerInput.value.trim().toLowerCase();
@@ -255,13 +255,14 @@ function handleSubmit(e) {
     if (!user) return;
     
     let problem = null;
-    for (const level in problems) {
-        problem = problems[level].find(p => p.id === currentProblemId);
+    for (const lvl in problems) {
+        problem = problems[lvl].find(p => p.id === currentProblemId);
         if (problem) break;
     }
     
     if (!problem) return;
     
+    // Normalize both answers
     const correctAnswer = problem.answer.toLowerCase()
         .replace(/\s+/g, ' ')
         .replace(/[áàäâ]/g, 'a')
@@ -278,35 +279,29 @@ function handleSubmit(e) {
         .replace(/[óòöô]/g, 'o')
         .replace(/[úùüû]/g, 'u');
     
-    const correct = correctAnswer.split(' ').some(word => 
+    // Check if answer contains key concepts
+    const isCorrect = correctAnswer.split(' ').some(word => 
         word.length > 3 && userAnswer.includes(word)
     ) || userAnswer.includes(correctAnswer);
     
-    user.submissions.push({
+    user.submissions.push({ 
         problem_id: currentProblemId,
         title: problem.title,
         level: problem.level,
-        answer: answer,
-        correct: correct,
-        timestamp: new Date().toISOString()
+        correct: isCorrect 
     });
     
-    if (correct && !user.solved.includes(currentProblemId)) {
+    if (isCorrect && !user.solved.includes(currentProblemId)) {
         user.solved.push(currentProblemId);
     }
-    
+
     saveUser(user);
     checkProgression(user);
+    updateUI();
+    renderSubmissions();
     
-    resultEl.className = 'result ' + (correct ? 'correct' : 'incorrect');
-    resultEl.textContent = correct 
-        ? '✓ ¡Correcto! Excelente trabajo.' 
-        : '✗ Incorrecto. Intentá de nuevo o probá otro problema.';
-    
-    setTimeout(() => {
-        loadUserData();
-        loadSubmissions();
-    }, 1000);
+    resultEl.textContent = isCorrect ? "✓ ¡Correcto!" : "✗ Incorrecto. Intentá de nuevo.";
+    resultEl.className = "result " + (isCorrect ? "correct" : "incorrect");
 }
 
 function checkProgression(user) {
@@ -330,64 +325,39 @@ function checkProgression(user) {
     }
 }
 
-function loadSubmissions() {
-    const user = getCurrentUser();
-    if (!user) return;
+// ========== 7. INICIALIZACIÓN ==========
+async function init() {
+    console.log('Iniciando ALEPH...');
     
-    const submissionsList = document.getElementById('submissionsList');
-    if (!submissionsList) return;
-    
-    if (user.submissions.length === 0) {
-        submissionsList.innerHTML = '<p style="text-align: center; padding: 20px; color: #999;">Todavía no hiciste ningún intento.</p>';
-        return;
-    }
-    
-    const recentSubmissions = user.submissions.slice(-10).reverse();
-    
-    submissionsList.innerHTML = recentSubmissions.map(sub => `
-        <div class="submission-item ${sub.correct ? 'correct' : 'incorrect'}">
-            <div>
-                <strong>${sub.title}</strong>
-                <span style="color: #999; margin-left: 10px;">${sub.level}</span>
-            </div>
-            <div>
-                ${sub.correct ? '✓ Correcto' : '✗ Incorrecto'}
-            </div>
-        </div>
-    `).join('');
-}
+    // Verificar autenticación
+    if (!checkAuth()) return;
 
-// ========== INITIALIZE ==========
+    // Cargar problemas
+    await loadProblemsData();
 
-// Load problems on page load
-loadProblemsData();
-
-// Initialize dashboard ONLY if on dashboard page
-if (window.location.pathname.includes('dashboard.html')) {
-    console.log('Dashboard page detected, initializing...');
-    
-    window.addEventListener('DOMContentLoaded', async () => {
-        console.log('DOM loaded, setting up dashboard...');
+    // Si estamos en dashboard, inicializar UI
+    if (window.location.pathname.includes('dashboard.html')) {
+        console.log('Inicializando dashboard...');
+        updateUI();
+        renderProblems();
+        renderSubmissions();
         
-        // Ensure problems are loaded
-        if (Object.keys(problems).length === 0) {
-            await loadProblemsData();
-        }
-        
-        // Load dashboard data
-        loadUserData();
-        loadProblems();
-        loadSubmissions();
-        
-        // Attach event listeners
-        const answerForm = document.getElementById('answerForm');
-        if (answerForm) {
-            answerForm.addEventListener('submit', handleSubmit);
-        }
-        
+        // Event listeners
         const levelFilter = document.getElementById('levelFilter');
         if (levelFilter) {
-            levelFilter.addEventListener('change', loadProblems);
+            levelFilter.addEventListener('change', renderProblems);
         }
-    });
+        
+        const answerForm = document.getElementById('answerForm');
+        if (answerForm) {
+            answerForm.addEventListener('submit', handleSubmission);
+        }
+    }
+}
+
+// Arrancar la app
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init);
+} else {
+    init();
 }
