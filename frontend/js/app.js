@@ -173,51 +173,60 @@ function closeProblem() {
 }
 
 // ========== 5. LOGIN / REGISTER ==========
-const loginForm = document.getElementById('loginForm');
-if (loginForm) {
-    loginForm.addEventListener('submit', (e) => {
-        e.preventDefault();
-        const username = document.getElementById('loginUsername').value;
-        const password = document.getElementById('loginPassword').value;
-        const users = JSON.parse(localStorage.getItem('users') || '{}');
+// Login handler (called from HTML)
+function handleLogin(e) {
+    e.preventDefault();
+    console.log('LOGIN EJECUTADO');
+    
+    const username = document.getElementById('loginUsername').value;
+    const password = document.getElementById('loginPassword').value;
+    const users = JSON.parse(localStorage.getItem('users') || '{}');
 
-        if (users[username] && users[username].password === password) {
-            localStorage.setItem('currentUser', username);
-            window.location.href = './dashboard.html';
-        } else {
-            const errorEl = document.getElementById('loginError');
-            if (errorEl) errorEl.textContent = 'Usuario o contraseña incorrectos';
-        }
-    });
-}
-
-const registerForm = document.getElementById('registerForm');
-if (registerForm) {
-    registerForm.addEventListener('submit', (e) => {
-        e.preventDefault();
-        const username = document.getElementById('registerUsername').value;
-        const email = document.getElementById('registerEmail').value;
-        const password = document.getElementById('registerPassword').value;
-        const users = JSON.parse(localStorage.getItem('users') || '{}');
-
-        if (users[username]) {
-            const errorEl = document.getElementById('registerError');
-            if (errorEl) errorEl.textContent = 'El usuario ya existe';
-            return;
-        }
-
-        users[username] = { 
-            email, 
-            password, 
-            level: 'pi=3', 
-            solved: [], 
-            submissions: [] 
-        };
-        localStorage.setItem('users', JSON.stringify(users));
+    if (users[username] && users[username].password === password) {
         localStorage.setItem('currentUser', username);
+        console.log('Login exitoso, redirigiendo...');
         window.location.href = './dashboard.html';
-    });
+    } else {
+        const errorEl = document.getElementById('loginError');
+        if (errorEl) errorEl.textContent = 'Usuario o contraseña incorrectos';
+    }
+    
+    return false;
 }
+
+// Register handler (called from HTML)
+function handleRegister(e) {
+    e.preventDefault();
+    console.log('REGISTER EJECUTADO');
+    
+    const username = document.getElementById('registerUsername').value;
+    const email = document.getElementById('registerEmail').value;
+    const password = document.getElementById('registerPassword').value;
+    const users = JSON.parse(localStorage.getItem('users') || '{}');
+
+    if (users[username]) {
+        const errorEl = document.getElementById('registerError');
+        if (errorEl) errorEl.textContent = 'El usuario ya existe';
+        return false;
+    }
+
+    users[username] = { 
+        email, 
+        password, 
+        level: 'pi=3', 
+        solved: [], 
+        submissions: [] 
+    };
+    localStorage.setItem('users', JSON.stringify(users));
+    localStorage.setItem('currentUser', username);
+    
+    console.log('Usuario creado, redirigiendo...');
+    window.location.href = './dashboard.html';
+    
+    return false;
+}
+
+
 
 function showLogin() {
     const loginForm = document.getElementById('loginForm');
