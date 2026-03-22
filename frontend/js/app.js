@@ -54,6 +54,9 @@ function checkAuth() {
         return false;
     }
     
+    // NO auto-redirigir si estás en index con user logueado
+    // El login/register ya hacen la redirección
+    
     return true;
 }
 
