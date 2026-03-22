@@ -35,7 +35,8 @@ function showRegister() {
 }
 
 // Login (fake)
-document.getElementById('loginForm')?.addEventListener('submit', (e) => {
+// Login (fake)
+document.getElementById('loginForm')?.addEventListener('submit', async (e) => {
     e.preventDefault();
     
     const username = document.getElementById('loginUsername').value;
@@ -56,11 +57,16 @@ document.getElementById('loginForm')?.addEventListener('submit', (e) => {
     
     // Login successful
     localStorage.setItem('currentUser', username);
+    
+    // Ensure problems are loaded before redirecting
+    if (Object.keys(problems).length === 0) {
+        await loadProblemsData();
+    }
+    
     window.location.href = 'dashboard.html';
 });
-
 // Register (fake)
-document.getElementById('registerForm')?.addEventListener('submit', (e) => {
+document.getElementById('registerForm')?.addEventListener('submit', async (e) => {
     e.preventDefault();
     
     const username = document.getElementById('registerUsername').value;
@@ -85,6 +91,11 @@ document.getElementById('registerForm')?.addEventListener('submit', (e) => {
     
     localStorage.setItem('users', JSON.stringify(users));
     localStorage.setItem('currentUser', username);
+    
+    // Ensure problems are loaded before redirecting
+    if (Object.keys(problems).length === 0) {
+        await loadProblemsData();
+    }
     
     window.location.href = 'dashboard.html';
 });
