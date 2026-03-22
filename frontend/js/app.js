@@ -212,25 +212,34 @@ function handleSubmission(e) {
     const isCorrect = score >= 60;
 
     // --- GUARDAR RESULTADO ---
-    user.submissions.push({ 
-        problem_id: currentProblemId, 
-        title: problem.title, 
-        level: problem.level, 
-        correct: isCorrect 
-    });
+// Mostrar resultado PRIMERO
+resultEl.className = "result " + (isCorrect ? "correct" : "incorrect");
+resultEl.textContent = isCorrect 
+    ? `✓ ¡Correcto! (Score: ${score.toFixed(0)}%)` 
+    : `✗ Incorrecto. (Score: ${score.toFixed(0)}%) Intentá de nuevo.`;
 
-    if (isCorrect && !user.solved.includes(currentProblemId)) {
-        user.solved.push(currentProblemId);
-    }
+// DESPUÉS guardar
+user.submissions.push({ 
+    problem_id: currentProblemId,
+    title: problem.title,
+    level: problem.level,
+    answer: answer,
+    correct: isCorrect,
+    score: Math.round(score)
+});
 
-    saveUser(user);
-    checkProgression(user);
+if (isCorrect && !user.solved.includes(currentProblemId)) {
+    user.solved.push(currentProblemId);
+}
+
+saveUser(user);
+checkProgression(user);
+
+// Actualizar UI después de un momento
+setTimeout(() => {
     updateUI();
     renderSubmissions();
-
-    resultEl.textContent = isCorrect ? "✓ ¡Correcto!" : "✗ Incorrecto. Revisá tu lógica.";
-    resultEl.className = "result " + (isCorrect ? "correct" : "incorrect");
-}
+}, 500);
 
 function checkProgression(user) {
     const levels = ['pi=3', 'pi=3.1', 'pi=3.14', 'pi=3.141', 'pi=3.1415'];
