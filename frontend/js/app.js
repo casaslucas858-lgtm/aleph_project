@@ -7,11 +7,29 @@ let currentProblemId = null;
 // Load problems from JSON
 async function loadProblemsData() {
     try {
-        const response = await fetch('data/problems.json');
+        console.log('Attempting to load problems...');
+        const response = await fetch('/aleph_project/frontend/data/problems.json');
+        console.log('Response status:', response.status);
+        
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        
         problems = await response.json();
+        console.log('Problems loaded successfully:', problems);
     } catch (error) {
         console.error('Error loading problems:', error);
-        problems = {}; // Fallback to empty
+        
+        // Try alternative path
+        try {
+            console.log('Trying alternative path...');
+            const response2 = await fetch('./data/problems.json');
+            problems = await response2.json();
+            console.log('Problems loaded from alternative path:', problems);
+        } catch (error2) {
+            console.error('Alternative path also failed:', error2);
+            problems = {};
+        }
     }
 }
 
@@ -35,14 +53,12 @@ function showRegister() {
 }
 
 // Login (fake)
-// Login (fake)
 document.getElementById('loginForm')?.addEventListener('submit', async (e) => {
     e.preventDefault();
     
     const username = document.getElementById('loginUsername').value;
     const password = document.getElementById('loginPassword').value;
     
-    // Check if user exists
     const users = JSON.parse(localStorage.getItem('users') || '{}');
     
     if (!users[username]) {
@@ -55,16 +71,15 @@ document.getElementById('loginForm')?.addEventListener('submit', async (e) => {
         return;
     }
     
-    // Login successful
     localStorage.setItem('currentUser', username);
     
-    // Ensure problems are loaded before redirecting
     if (Object.keys(problems).length === 0) {
         await loadProblemsData();
     }
     
     window.location.href = 'dashboard.html';
 });
+
 // Register (fake)
 document.getElementById('registerForm')?.addEventListener('submit', async (e) => {
     e.preventDefault();
@@ -80,7 +95,6 @@ document.getElementById('registerForm')?.addEventListener('submit', async (e) =>
         return;
     }
     
-    // Create user
     users[username] = {
         email: email,
         password: password,
@@ -92,7 +106,6 @@ document.getElementById('registerForm')?.addEventListener('submit', async (e) =>
     localStorage.setItem('users', JSON.stringify(users));
     localStorage.setItem('currentUser', username);
     
-    // Ensure problems are loaded before redirecting
     if (Object.keys(problems).length === 0) {
         await loadProblemsData();
     }
@@ -131,7 +144,6 @@ function saveUser(user) {
     localStorage.setItem('users', JSON.stringify(users));
 }
 
-// Load user data
 async function loadUserData() {
     const user = getCurrentUser();
     if (!user) return;
@@ -140,7 +152,6 @@ async function loadUserData() {
     document.getElementById('userLevel').textContent = user.level;
     document.getElementById('currentLevel').textContent = user.level;
     
-    // Calculate stats
     const solved = user.solved.length;
     const total = user.submissions.length;
     const accuracy = total > 0 ? Math.round((solved / total) * 100) : 0;
@@ -149,8 +160,9 @@ async function loadUserData() {
     document.getElementById('accuracy').textContent = accuracy + '%';
 }
 
-// Load problems
 async function loadProblems() {
+    console.log('loadProblems called, current problems:', problems);
+    
     const level = document.getElementById('levelFilter')?.value || 'pi=3';
     const problemList = document.getElementById('problemList');
     
@@ -167,11 +179,9 @@ async function loadProblems() {
     `).join('');
 }
 
-// Open problem
 function openProblem(id) {
     currentProblemId = id;
     
-    // Find problem across all levels
     let problem = null;
     for (const level in problems) {
         problem = problems[level].find(p => p.id === id);
@@ -193,14 +203,12 @@ function openProblem(id) {
     document.getElementById('problemView').style.display = 'block';
 }
 
-// Close problem
 function closeProblem() {
     document.getElementById('problemView').style.display = 'none';
     document.querySelector('.problems').style.display = 'block';
     document.querySelector('.submissions').style.display = 'block';
 }
 
-// Submit answer
 document.getElementById('answerForm')?.addEventListener('submit', (e) => {
     e.preventDefault();
     
@@ -208,7 +216,6 @@ document.getElementById('answerForm')?.addEventListener('submit', (e) => {
     const resultEl = document.getElementById('result');
     const user = getCurrentUser();
     
-    // Find problem
     let problem = null;
     for (const level in problems) {
         problem = problems[level].find(p => p.id === currentProblemId);
@@ -217,7 +224,6 @@ document.getElementById('answerForm')?.addEventListener('submit', (e) => {
     
     if (!problem) return;
     
-    // Normalize answer for comparison
     const correctAnswer = problem.answer.toLowerCase()
         .replace(/\s+/g, ' ')
         .replace(/[áàäâ]/g, 'a')
@@ -234,12 +240,10 @@ document.getElementById('answerForm')?.addEventListener('submit', (e) => {
         .replace(/[óòöô]/g, 'o')
         .replace(/[úùüû]/g, 'u');
     
-    // Check if answer contains key concepts
     const correct = correctAnswer.split(' ').some(word => 
         word.length > 3 && userAnswer.includes(word)
     ) || userAnswer.includes(correctAnswer);
     
-    // Save submission
     user.submissions.push({
         problem_id: currentProblemId,
         title: problem.title,
@@ -254,31 +258,25 @@ document.getElementById('answerForm')?.addEventListener('submit', (e) => {
     }
     
     saveUser(user);
-    
-    // Check for level progression
     checkProgression(user);
     
-    // Show result
     resultEl.className = 'result ' + (correct ? 'correct' : 'incorrect');
     resultEl.textContent = correct 
         ? '✓ ¡Correcto! Excelente trabajo.' 
         : '✗ Incorrecto. Intentá de nuevo o probá otro problema.';
     
-    // Reload stats
     setTimeout(() => {
         loadUserData();
         loadSubmissions();
     }, 1000);
 });
 
-// Check progression
 function checkProgression(user) {
     const levels = ['pi=3', 'pi=3.1', 'pi=3.14', 'pi=3.141', 'pi=3.1415'];
     const currentLevelIndex = levels.indexOf(user.level);
     
     if (currentLevelIndex === -1 || currentLevelIndex === levels.length - 1) return;
     
-    // Count solved in current level
     const currentLevelProblems = problems[user.level] || [];
     const solvedInLevel = user.solved.filter(id => 
         currentLevelProblems.some(p => p.id === id)
@@ -286,17 +284,14 @@ function checkProgression(user) {
     
     const percentage = (solvedInLevel / currentLevelProblems.length) * 100;
     
-    // Auto-promote at 70%
     if (percentage >= 70) {
         user.level = levels[currentLevelIndex + 1];
         saveUser(user);
-        
         alert(`¡Felicitaciones! Avanzaste a ${user.level}`);
         location.reload();
     }
 }
 
-// Load submissions
 function loadSubmissions() {
     const user = getCurrentUser();
     if (!user) return;
@@ -323,9 +318,9 @@ function loadSubmissions() {
     `).join('');
 }
 
-// Initialize dashboard
 if (window.location.pathname.includes('dashboard.html')) {
     window.addEventListener('DOMContentLoaded', async () => {
+        console.log('Dashboard loading...');
         await loadProblemsData();
         loadUserData();
         loadProblems();
