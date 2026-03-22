@@ -21,6 +21,7 @@ async function loadProblemsData() {
     }
 }
 
+
 // ========== 2. GESTIÓN DE USUARIOS ==========
 function getCurrentUser() {
     const username = localStorage.getItem('currentUser');
