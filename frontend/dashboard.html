@@ -39,14 +39,12 @@
                 <h2>Problemas Disponibles</h2>
                 <div class="filter">
                     <label>Filtrar por nivel:</label>
-                    <select id="levelFilter" onchange="loadProblems()">
+                    <select id="levelFilter">
                         <option value="pi=3">π=3</option>
                         <option value="pi=3.1">π=3.1</option>
                         <option value="pi=3.14">π=3.14</option>
                         <option value="pi=3.141">π=3.141</option>
                         <option value="pi=3.1415">π=3.1415</option>
-                        <option value="e=2">e=2</option>
-                        <option value="e=2.7">e=2.7</option>
                     </select>
                 </div>
                 <div id="problemList" class="problem-list">
@@ -79,18 +77,5 @@
     </div>
 
     <script src="js/app.js"></script>
-    <script>
-        // Check if logged in
-        if (!localStorage.getItem('token')) {
-            window.location.href = 'index.html';
-        }
-
-        // Load user data on page load
-        window.addEventListener('DOMContentLoaded', () => {
-            loadUserData();
-            loadProblems();
-            loadSubmissions();
-        });
-    </script>
 </body>
 </html>
