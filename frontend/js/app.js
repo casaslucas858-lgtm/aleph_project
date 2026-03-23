@@ -183,7 +183,15 @@ function handleSubmission(e) {
 
     // Keywords obligatorias por problema
     const requiredKeywords = {
-        1: ['2a', '2b', 'par'],
+        1: {
+            required: ['par'],
+            alternatives: [
+                ['2a', '2b'],
+                ['2m', '2n'],
+                ['2k', '2j'],
+                ['2(']
+            ]
+        },
         2: ['10k', '5', '2k'],
         3: ['3k', 'consecutivos'],
         4: ['induccion', 'base'],
@@ -199,10 +207,33 @@ function handleSubmission(e) {
         14: ['epsilon', '1/epsilon'],
         15: ['biyeccion', 'f(n)=2n']
     };
+    
+    // Validar keywords
+    const keywordConfig = requiredKeywords[currentProblemId];
+    let hasEnoughKeywords = true;
+    let keywordDebug = '';
 
-    const required = requiredKeywords[currentProblemId] || [];
-    const matchedKeywords = required.filter(kw => userAnswer.includes(kw)).length;
-    const hasEnoughKeywords = required.length === 0 || matchedKeywords >= Math.ceil(required.length * 0.5);
+    if (keywordConfig) {
+        if (typeof keywordConfig === 'object' && !Array.isArray(keywordConfig)) {
+            // Formato con required/alternatives
+            const requiredMatches = (keywordConfig.required || []).filter(kw => userAnswer.includes(kw)).length;
+            const requiredOK = requiredMatches === (keywordConfig.required || []).length;
+            
+            const alternativesOK = !keywordConfig.alternatives || keywordConfig.alternatives.some(alt => 
+                alt.every(kw => userAnswer.includes(kw))
+            );
+            
+            hasEnoughKeywords = requiredOK && alternativesOK;
+            keywordDebug = `Required: ${requiredOK ? '✓' : '✗'}, Alternatives: ${alternativesOK ? '✓' : '✗'}`;
+            
+        } else {
+            // Formato array simple
+            const required = keywordConfig;
+            const matchedKeywords = required.filter(kw => userAnswer.includes(kw)).length;
+            hasEnoughKeywords = required.length === 0 || matchedKeywords >= Math.ceil(required.length * 0.5);
+            keywordDebug = `${matchedKeywords}/${required.length} keywords`;
+        }
+    }
 
     // Scoring
     let score = 0;
@@ -218,16 +249,14 @@ function handleSubmission(e) {
     } else if (hasEnoughKeywords) {
         const keywords = correctAnswer.split(' ').filter(w => w.length > 2);
         const matches = keywords.filter(w => userAnswer.includes(w)).length;
-        const keywordScore = keywords.length > 0 ? (matches / keywords.length) * 60 : 60;
-        const requiredScore = required.length > 0 ? (matchedKeywords / required.length) * 40 : 40;
-        score = keywordScore + requiredScore;
-        console.log(`Parcial: ${matches}/${keywords.length} keywords, ${matchedKeywords}/${required.length} requeridas → ${score.toFixed(0)}%`);
+        score = keywords.length > 0 ? (matches / keywords.length) * 100 : 80;
+        console.log(`Parcial: ${keywordDebug}, fragmentos: ${matches}/${keywords.length} → ${score.toFixed(0)}%`);
     } else {
         score = 0;
-        console.log('❌ No cumple requisitos');
+        console.log(`❌ No cumple requisitos: ${keywordDebug}`);
     }
 
-    const isCorrect = score >= 60;
+    const isCorrect = score >= 50;
     console.log(`Score final: ${score.toFixed(0)}% → ${isCorrect ? 'CORRECTA' : 'INCORRECTA'}`);
 
     // Mostrar resultado
