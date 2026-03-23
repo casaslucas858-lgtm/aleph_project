@@ -339,26 +339,36 @@ function logout() {
     window.location.href = './index.html';
 }
 
-// ========== 7. DARK MODE ==========
+// ========== DARK MODE ==========
 function toggleDarkMode() {
     document.body.classList.toggle('dark-mode');
     const isDark = document.body.classList.contains('dark-mode');
     localStorage.setItem('darkMode', isDark);
     
     // Cambiar emoji del botón
-    const btn = document.querySelector('.dark-mode-toggle');
+    const btn = document.getElementById('darkModeBtn');
     if (btn) {
         btn.textContent = isDark ? '☀️' : '🌙';
     }
 }
 
-function applySavedTheme() {
-    if (localStorage.getItem('darkMode') === 'true') {
+// Configurar dark mode al cargar
+function initDarkMode() {
+    const isDark = localStorage.getItem('darkMode') === 'true';
+    if (isDark) {
         document.body.classList.add('dark-mode');
-        const btn = document.querySelector('.dark-mode-toggle');
-        if (btn) btn.textContent = '☀️';
+    }
+    
+    // Actualizar botón
+    const btn = document.getElementById('darkModeBtn');
+    if (btn) {
+        btn.textContent = isDark ? '☀️' : '🌙';
+        btn.addEventListener('click', toggleDarkMode);
     }
 }
+
+// Ejecutar al cargar
+initDarkMode();
 
 // ========== 8. INICIALIZACIÓN ==========
 async function init() {
