@@ -1,6 +1,15 @@
 // ALEPH PROJECT - FRONTEND-ONLY ENGINE
+// ALEPH PROJECT - FRONTEND-ONLY ENGINE
 let problems = {};
 let currentProblemId = null;
+
+// ========== SANITIZATION ==========
+function sanitize(text) {
+    if (!text) return '';
+    const temp = document.createElement('div');
+    temp.textContent = text;
+    return temp.innerHTML;
+}
 
 // ========== 1. CARGA DE DATOS ==========
 async function loadProblemsData() {
@@ -59,10 +68,10 @@ function updateUI() {
         'solvedCount': user.solved.length
     };
 
-    for (const [id, value] of Object.entries(elements)) {
-        const el = document.getElementById(id);
-        if (el) el.textContent = value;
-    }
+for (const [id, value] of Object.entries(elements)) {
+    const el = document.getElementById(id);
+    if (el) el.textContent = sanitize(value);
+}
     
     const accuracyEl = document.getElementById('accuracy');
     if (accuracyEl) {
