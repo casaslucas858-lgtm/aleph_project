@@ -133,7 +133,12 @@ function openProblem(id) {
 
     document.getElementById('problemTitle').textContent = problem.title;
     document.getElementById('problemStatement').textContent = problem.statement;
-    document.getElementById('result').textContent = '';
+const resultEl = document.getElementById('result');
+if (resultEl) {
+    resultEl.textContent = '';
+    resultEl.className = 'result';
+    resultEl.style.display = 'none';
+}
     document.getElementById('answerInput').value = '';
     document.getElementById('problemView').style.display = 'block';
     document.querySelector('.problems').style.display = 'none';
