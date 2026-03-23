@@ -246,11 +246,17 @@ function handleSubmission(e) {
     } else if (userAnswer.includes(correctAnswer)) {
         score = 95;
         console.log('✓ Contiene respuesta exacta');
-    } else if (hasEnoughKeywords) {
-        const keywords = correctAnswer.split(' ').filter(w => w.length > 2);
-        const matches = keywords.filter(w => userAnswer.includes(w)).length;
-        score = keywords.length > 0 ? (matches / keywords.length) * 100 : 80;
-        console.log(`Parcial: ${keywordDebug}, fragmentos: ${matches}/${keywords.length} → ${score.toFixed(0)}%`);
+} else if (hasEnoughKeywords) {
+    // Score base por cumplir keywords
+    let baseScore = 70;
+    
+    // Bonus por fragmentos de respuesta correcta
+    const keywords = correctAnswer.split(' ').filter(w => w.length > 2);
+    const matches = keywords.filter(w => userAnswer.includes(w)).length;
+    const fragmentBonus = keywords.length > 0 ? (matches / keywords.length) * 30 : 0;
+    
+    score = baseScore + fragmentBonus;
+    console.log(`✓ Keywords OK (${keywordDebug}) → base: ${baseScore}%, fragmentos: +${fragmentBonus.toFixed(0)}% → total: ${score.toFixed(0)}%`);
     } else {
         score = 0;
         console.log(`❌ No cumple requisitos: ${keywordDebug}`);
