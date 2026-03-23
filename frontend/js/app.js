@@ -345,21 +345,18 @@ function toggleDarkMode() {
     const isDark = document.body.classList.contains('dark-mode');
     localStorage.setItem('darkMode', isDark);
     
-    // Cambiar emoji del botón
     const btn = document.getElementById('darkModeBtn');
     if (btn) {
         btn.textContent = isDark ? '☀️' : '🌙';
     }
 }
 
-// Configurar dark mode al cargar
 function initDarkMode() {
     const isDark = localStorage.getItem('darkMode') === 'true';
     if (isDark) {
         document.body.classList.add('dark-mode');
     }
     
-    // Actualizar botón
     const btn = document.getElementById('darkModeBtn');
     if (btn) {
         btn.textContent = isDark ? '☀️' : '🌙';
@@ -367,17 +364,13 @@ function initDarkMode() {
     }
 }
 
-// Ejecutar al cargar
-initDarkMode();
-
-// ========== 8. INICIALIZACIÓN ==========
+// ========== INICIALIZACIÓN ==========
 async function init() {
     console.log('Iniciando ALEPH...');
-    applySavedTheme(); // Aplicar tema antes que nada
     
     if (!checkAuth()) return;
     await loadProblemsData();
-
+    
     if (window.location.pathname.includes('dashboard.html')) {
         console.log('Inicializando dashboard...');
         updateUI();
@@ -386,13 +379,14 @@ async function init() {
         document.getElementById('levelFilter')?.addEventListener('change', renderProblems);
         document.getElementById('answerForm')?.addEventListener('submit', handleSubmission);
     }
-    
-    // Listener para el botón de dark mode si existe
-    document.querySelector('.dark-mode-toggle')?.addEventListener('click', toggleDarkMode);
 }
 
 if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', init);
+    document.addEventListener('DOMContentLoaded', () => {
+        initDarkMode();
+        init();
+    });
 } else {
+    initDarkMode();
     init();
 }
