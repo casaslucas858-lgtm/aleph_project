@@ -3,86 +3,100 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ALEPH - Olimpiada de Fundamentos Matemáticos</title>
+    <title>ALEPH - Plataforma de Estudio Matemático</title>
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
     <div class="container">
         <header>
-            <h1>ALEPH</h1>
-            <p class="tagline">No es cuánto sabés, es qué tan profundo</p>
+            <h1>ℵ ALEPH</h1>
+            <p class="tagline">Plataforma de Estudio Matemático</p>
+            <div style="text-align: center;">
+                <button class="dark-mode-toggle" onclick="toggleDarkMode()" title="Cambiar tema">🌙</button>
+            </div>
         </header>
 
         <main>
             <section class="hero">
-                <h2>Olimpiada de Fundamentos Matemáticos</h2>
-                <p>Sistema de progresión: π → e → ℵ</p>
+                <h2>No es cuánto sabés, es qué tan profundo</h2>
+                <p>Medimos comprensión real, no velocidad ni memorización. Demostraciones formales, rigor lógico, construcciones matemáticas.</p>
             </section>
 
             <section class="levels">
                 <div class="level-card">
-                    <h3>π (PI) - Lineal</h3>
-                    <p>Matemática secundaria → Fundamentos formales</p>
+                    <h3 class="pi">π</h3>
+                    <h4>Progresión Lineal</h4>
+                    <p>Aprendizaje sin presión. Avanzás automáticamente cuando resolvés 70% de los problemas.</p>
                     <ul>
-                        <li>π=3: Matemática básica</li>
-                        <li>π=3.1: Matemática de examen</li>
-                        <li>π=3.14: Avanzada</li>
-                        <li>π=3.141: Canguro entrada</li>
-                        <li>π=3.1415: Canguro avanzado</li>
+                        <li>π=3 → Primeras demostraciones</li>
+                        <li>π=3.1 → Inducción y lógica</li>
+                        <li>π=3.14 → Rigor creciente</li>
+                        <li>π=3.141 → Clásicas</li>
+                        <li>π=3.1415 → Construcciones formales</li>
                     </ul>
-                    <p class="progression">Auto-promoción: 70-80% correcto</p>
+                    <div class="progression">
+                        Regla: 70% correcto → promoción
+                    </div>
                 </div>
 
                 <div class="level-card">
-                    <h3>e (EULER) - Competitivo</h3>
-                    <p>Olimpiada avanzada → Matemática formal</p>
+                    <h3 class="euler">e</h3>
+                    <h4>Competitivo</h4>
+                    <p>Ranking mensual. Top 50 cada mes avanzan al siguiente nivel.</p>
                     <ul>
-                        <li>e=2: Construcciones formales (Peano, ℤ, ℚ)</li>
-                        <li>e=2.7: Pre-Aleph (Gödel, ZFC)</li>
+                        <li>e=2.0 → Formalismo básico</li>
+                        <li>e=2.3 → Construcciones</li>
+                        <li>e=2.5 → Refutaciones</li>
+                        <li>e=2.7 → Límites de axiomas</li>
                     </ul>
-                    <p class="progression">Top 50 mensuales → promoción a ℵ</p>
+                    <div class="progression">
+                        Degradación por inactividad
+                    </div>
                 </div>
 
                 <div class="level-card">
-                    <h3>ℵ (ALEPH) - Élite</h3>
-                    <p>Club de matemática avanzada</p>
+                    <h3 class="aleph">ℵ</h3>
+                    <h4>Elite</h4>
+                    <p>Prestige + ELO dual (Math + Algo). Colaboración sobre competencia.</p>
                     <ul>
-                        <li>ELO dual: Math + Algoritmos</li>
-                        <li>Problema de la semana</li>
+                        <li>Math ELO → Problemas matemáticos</li>
+                        <li>Algo ELO → Programación competitiva</li>
                         <li>Duelos 1v1 opcionales</li>
-                        <li>Torneos mensuales</li>
+                        <li>Problema de la semana</li>
                     </ul>
-                    <p class="progression">Membresía permanente</p>
+                    <div class="progression">
+                        Requiere test pedagógico
+                    </div>
                 </div>
             </section>
 
             <section class="auth">
                 <div class="auth-container">
                     <div class="auth-tabs">
-                        <button class="tab active" onclick="showLogin()">Iniciar Sesión</button>
+                        <button class="tab active" onclick="showLogin()">Ingresar</button>
                         <button class="tab" onclick="showRegister()">Registrarse</button>
                     </div>
 
-                  <form id="loginForm" class="auth-form" onsubmit="return handleLogin(event)">
+                    <form id="loginForm" class="auth-form" onsubmit="return handleLogin(event)">
                         <input type="text" id="loginUsername" placeholder="Usuario" required>
                         <input type="password" id="loginPassword" placeholder="Contraseña" required>
-                        <button type="submit">Entrar</button>
-                        <p class="error" id="loginError"></p>
+                        <button type="submit">Ingresar</button>
+                        <div id="loginError" class="error"></div>
                     </form>
 
-                 <form id="registerForm" class="auth-form" style="display: none;" onsubmit="return handleRegister(event)">
+                    <form id="registerForm" class="auth-form" style="display: none;" onsubmit="return handleRegister(event)">
                         <input type="text" id="registerUsername" placeholder="Usuario" required>
                         <input type="email" id="registerEmail" placeholder="Email" required>
                         <input type="password" id="registerPassword" placeholder="Contraseña" required>
                         <button type="submit">Crear Cuenta</button>
-                        <p class="error" id="registerError"></p>
+                        <div id="registerError" class="error"></div>
                     </form>
                 </div>
             </section>
         </main>
 
         <footer>
-            <p>ALEPH © 2026 | Matemática rigurosa, progresión honesta</p>
+            <p>ALEPH © 2026 | Plataforma de Estudio Matemático</p>
         </footer>
     </div>
 
