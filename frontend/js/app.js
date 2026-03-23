@@ -302,17 +302,27 @@ function handleRegister(e) {
 }
 
 function showLogin() {
-    document.getElementById('loginForm').style.display = 'flex';
-    document.getElementById('registerForm').style.display = 'none';
-    document.querySelectorAll('.tab')[0].classList.add('active');
-    document.querySelectorAll('.tab')[1].classList.remove('active');
+    const loginForm = document.getElementById('loginForm');
+    const registerForm = document.getElementById('registerForm');
+    if (loginForm) loginForm.style.display = 'flex';
+    if (registerForm) registerForm.style.display = 'none';
+    const tabs = document.querySelectorAll('.tab');
+    if (tabs.length >= 2) {
+        tabs[0].classList.add('active');
+        tabs[1].classList.remove('active');
+    }
 }
 
 function showRegister() {
-    document.getElementById('loginForm').style.display = 'none';
-    document.getElementById('registerForm').style.display = 'flex';
-    document.querySelectorAll('.tab')[0].classList.remove('active');
-    document.querySelectorAll('.tab')[1].classList.add('active');
+    const loginForm = document.getElementById('loginForm');
+    const registerForm = document.getElementById('registerForm');
+    if (loginForm) loginForm.style.display = 'none';
+    if (registerForm) registerForm.style.display = 'flex';
+    const tabs = document.querySelectorAll('.tab');
+    if (tabs.length >= 2) {
+        tabs[0].classList.remove('active');
+        tabs[1].classList.add('active');
+    }
 }
 
 function logout() {
@@ -320,9 +330,32 @@ function logout() {
     window.location.href = './index.html';
 }
 
-// ========== 7. INICIALIZACIÓN ==========
+// ========== 7. DARK MODE ==========
+function toggleDarkMode() {
+    document.body.classList.toggle('dark-mode');
+    const isDark = document.body.classList.contains('dark-mode');
+    localStorage.setItem('darkMode', isDark);
+    
+    // Cambiar emoji del botón
+    const btn = document.querySelector('.dark-mode-toggle');
+    if (btn) {
+        btn.textContent = isDark ? '☀️' : '🌙';
+    }
+}
+
+function applySavedTheme() {
+    if (localStorage.getItem('darkMode') === 'true') {
+        document.body.classList.add('dark-mode');
+        const btn = document.querySelector('.dark-mode-toggle');
+        if (btn) btn.textContent = '☀️';
+    }
+}
+
+// ========== 8. INICIALIZACIÓN ==========
 async function init() {
     console.log('Iniciando ALEPH...');
+    applySavedTheme(); // Aplicar tema antes que nada
+    
     if (!checkAuth()) return;
     await loadProblemsData();
 
@@ -334,6 +367,9 @@ async function init() {
         document.getElementById('levelFilter')?.addEventListener('change', renderProblems);
         document.getElementById('answerForm')?.addEventListener('submit', handleSubmission);
     }
+    
+    // Listener para el botón de dark mode si existe
+    document.querySelector('.dark-mode-toggle')?.addEventListener('click', toggleDarkMode);
 }
 
 if (document.readyState === 'loading') {
@@ -341,5 +377,3 @@ if (document.readyState === 'loading') {
 } else {
     init();
 }
-
-// GITHUB PAGES ACTUALIZA
