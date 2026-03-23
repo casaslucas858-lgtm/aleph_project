@@ -468,6 +468,7 @@ body.dark-mode .answer-form input {
     font-size: 1.15em;
     text-align: center;
     font-weight: 600;
+    display: none;  /* Oculto por default */
 }
 
 .result.correct {
