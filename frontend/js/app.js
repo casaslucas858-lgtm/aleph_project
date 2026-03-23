@@ -265,11 +265,12 @@ function handleSubmission(e) {
     const isCorrect = score >= 50;
     console.log(`Score final: ${score.toFixed(0)}% → ${isCorrect ? 'CORRECTA' : 'INCORRECTA'}`);
 
-    // Mostrar resultado
-    resultEl.className = "result " + (isCorrect ? "correct" : "incorrect");
-    resultEl.textContent = isCorrect 
-        ? `✓ ¡Correcto! (Score: ${score.toFixed(0)}%)` 
-        : `✗ Incorrecto (Score: ${score.toFixed(0)}%). Intentá de nuevo.`;
+// Mostrar resultado
+resultEl.textContent = isCorrect 
+    ? `✓ ¡Correcto! (Score: ${score.toFixed(0)}%)` 
+    : `✗ Incorrecto (Score: ${score.toFixed(0)}%). Intentá de nuevo.`;
+resultEl.className = "result " + (isCorrect ? "correct" : "incorrect");
+resultEl.style.display = 'block';  // Asegurar que se muestra
 
     // Guardar
     user.submissions.push({ 
