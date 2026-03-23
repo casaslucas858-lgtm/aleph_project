@@ -187,31 +187,47 @@ function handleSubmission(e) {
     const hasAntiKeyword = antiKeywords.some(bad => userAnswer.includes(bad));
 
     // Keywords obligatorias por problema
-    const requiredKeywords = {
-        1: {
-            required: ['par'],
-            alternatives: [
-                ['2a', '2b'],
-                ['2m', '2n'],
-                ['2k', '2j'],
-                ['2(']
-            ]
-        },
-        2: ['10k', '5', '2k'],
-        3: ['3k', 'consecutivos'],
-        4: ['induccion', 'base'],
-        5: ['4', '-4', '5', '-5'],
-        6: ['existe', 'para todo'],
-        7: ['(a-b)', '4ab', 'raiz'],
-        8: ['5', 'diagonal'],
-        9: ['13', '12', 'palomar'],
-        10: ['euclides', 'producto', 'primo'],
-        11: ['contradiccion', 'irreducible'],
-        12: ['paralela', 'alternos', '180'],
-        13: ['(a,b)', 'equivalencia'],
-        14: ['epsilon', '1/epsilon'],
-        15: ['biyeccion', 'f(n)=2n']
-    };
+const requiredKeywords = {
+    1: {
+        required: ['par'],
+        alternatives: [
+            ['2a', '2b'],
+            ['2m', '2n'],
+            ['2k', '2j'],
+            ['2(']
+        ]
+    },
+    2: {
+        required: ['5', 'multiplo'],
+        alternatives: [
+            ['10k', '2k'],
+            ['10n', '2n'],
+            ['10', '5('],
+            ['termina', '0', '5']
+        ]
+    },
+    3: {
+        required: ['consecutivos', '3'],
+        alternatives: [
+            ['3k', 'n+1', 'n+2'],
+            ['3n', 'n+1', 'n+2'],
+            ['n', 'n+1', 'n+2', '3k'],
+            ['divisible', '3']
+        ]
+    },
+    4: ['induccion', 'base'],
+    5: ['4', '-4', '5', '-5'],
+    6: ['existe', 'para todo'],
+    7: ['(a-b)', '4ab', 'raiz'],
+    8: ['5', 'diagonal'],
+    9: ['13', '12', 'palomar'],
+    10: ['euclides', 'producto', 'primo'],
+    11: ['contradiccion', 'irreducible'],
+    12: ['paralela', 'alternos', '180'],
+    13: ['(a,b)', 'equivalencia'],
+    14: ['epsilon', '1/epsilon'],
+    15: ['biyeccion', 'f(n)=2n']
+};
     
     // Validar keywords
     const keywordConfig = requiredKeywords[currentProblemId];
