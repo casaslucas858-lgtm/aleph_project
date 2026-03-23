@@ -188,6 +188,7 @@ function handleSubmission(e) {
 
     // Keywords obligatorias por problema
 const requiredKeywords = {
+    // π=3 (problemas 1-10)
     1: {
         required: ['par'],
         alternatives: [
@@ -215,18 +216,137 @@ const requiredKeywords = {
             ['divisible', '3']
         ]
     },
-    4: ['induccion', 'base'],
-    5: ['4', '-4', '5', '-5'],
-    6: ['existe', 'para todo'],
-    7: ['(a-b)', '4ab', 'raiz'],
-    8: ['5', 'diagonal'],
-    9: ['13', '12', 'palomar'],
-    10: ['euclides', 'producto', 'primo'],
-    11: ['contradiccion', 'irreducible'],
-    12: ['paralela', 'alternos', '180'],
-    13: ['(a,b)', 'equivalencia'],
-    14: ['epsilon', '1/epsilon'],
-    15: ['biyeccion', 'f(n)=2n']
+    4: {
+        required: ['4'],
+        alternatives: [
+            ['4^32', '4^1'],
+            ['4^33', '4^40', '4^8'],
+            ['exponentes', 'resta'],
+            ['raiz', '64', '4*2']
+        ]
+    },
+    5: {
+        required: ['par'],
+        alternatives: [
+            ['2k', 'n^2', '4k'],
+            ['2k', '(2k)^2'],
+            ['n=2k', '2(2k^2)']
+        ]
+    },
+    6: {
+        required: ['x'],
+        alternatives: [
+            ['distributiva', '2x-6'],
+            ['2x-6', '5x+1'],
+            ['-7', '3x'],
+            ['x=-7/3']
+        ]
+    },
+    7: {
+        required: ['0', 'contradiccion'],
+        alternatives: [
+            ['0*x', '5=0'],
+            ['indefinida', 'no definida'],
+            ['imposible', 'contradiccion']
+        ]
+    },
+    8: {
+        required: ['3', 'multiplo'],
+        alternatives: [
+            ['2k+1', '2k+3', '2k+5'],
+            ['6k+9', '3('],
+            ['impar', 'consecutivos', '3(']
+        ]
+    },
+    9: {
+        required: ['diferencia', 'cuadrados'],
+        alternatives: [
+            ['(x+3)', '(x-3)'],
+            ['x^2-3^2'],
+            ['a^2-b^2', '(a+b)(a-b)']
+        ]
+    },
+    10: {
+        required: ['x^2=2'],
+        alternatives: [
+            ['numero', 'positivo', 'x^2=2'],
+            ['x*x=2', 'positivo'],
+            ['cuadrado', '2']
+        ]
+    },
+    
+    // π=3.1 (problemas 11-17)
+    11: {
+        required: ['4'],
+        alternatives: [
+            ['5', '-5', '4', '-4'],
+            ['p*q=4', 'p+q'],
+            ['divisores', '4']
+        ]
+    },
+    12: {
+        required: ['x', 'y'],
+        alternatives: [
+            ['x=y+1', '5y'],
+            ['y=1', 'x=2'],
+            ['sustitucion', 'reemplazo']
+        ]
+    },
+    13: {
+        required: ['x=2', 'x=3'],
+        alternatives: [
+            ['(x-2)', '(x-3)'],
+            ['factoriza', 'producto'],
+            ['verifica', '4-10+6']
+        ]
+    },
+    14: {
+        required: ['cada', 'un'],
+        alternatives: [
+            ['exactamente', 'uno', 'y'],
+            ['unico', 'imagen'],
+            ['contraejemplo', 'dos', 'y']
+        ]
+    },
+    15: {
+        required: ['impar'],
+        alternatives: [
+            ['2k+1', 'n^2', '(2k+1)^2'],
+            ['4k^2+4k+1', '2('],
+            ['+1', 'impar']
+        ]
+    },
+    16: {
+        required: ['(x+3)^2', '-4'],
+        alternatives: [
+            ['x^2+6x+9', '-9+5'],
+            ['completar', 'cuadrado'],
+            ['+9', '-9']
+        ]
+    },
+    17: {
+        required: ['fraccion', 'no'],
+        alternatives: [
+            ['p/q', 'no se puede'],
+            ['raiz', '2', 'irracional'],
+            ['decimal', 'infinito', 'no periodico']
+        ]
+    },
+    
+    // π=3.14 (problemas originales 7-9, ahora renumerados)
+    18: ['(a-b)', '4ab', 'raiz'],
+    19: ['5', 'diagonal'],
+    20: ['13', '12', 'palomar'],
+    
+    // π=3.141 (problemas originales 10-12, ahora renumerados)
+    21: ['euclides', 'producto', 'primo'],
+    22: ['contradiccion', 'irreducible'],
+    23: ['paralela', 'alternos', '180'],
+    
+    // π=3.1415 (problemas originales 13-15, ahora renumerados)
+    24: ['(a,b)', 'equivalencia'],
+    25: ['epsilon', '1/epsilon'],
+    26: ['biyeccion', 'f(n)=2n']
 };
     
     // Validar keywords
