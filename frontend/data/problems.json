@@ -4,7 +4,7 @@
       "id": 1,
       "level": "pi=3",
       "title": "Par + Par = Par",
-      "statement": "Demostrá que si sumás dos números pares, el resultado siempre es par.",
+      "statement": "Demostrá que la suma de dos números pares es siempre par.",
       "answer": "2a+2b=2(a+b)"
     },
     {
@@ -18,96 +18,194 @@
       "id": 3,
       "level": "pi=3",
       "title": "Tres consecutivos",
-      "statement": "Demostrá que en cualquier grupo de 3 números enteros consecutivos, al menos uno es múltiplo de 3.",
+      "statement": "Demostrá que en tres números enteros consecutivos, al menos uno es múltiplo de 3.",
       "answer": "n,n+1,n+2 casos 3k o 3k+1 o 3k+2"
+    },
+    {
+      "id": 4,
+      "level": "pi=3",
+      "title": "Simplificación de potencias",
+      "statement": "Simplificá y JUSTIFICÁ cada paso: 4³³:(4⁴⁰:4⁸) + ³√64 · 2 - 8",
+      "answer": "4^33:4^32 = 4^1 = 4, raiz cubica 64 = 4, entonces 4 + 4*2 - 8 = 4"
+    },
+    {
+      "id": 5,
+      "level": "pi=3",
+      "title": "Cuadrado de par",
+      "statement": "Demostrá que si n es par, entonces n² también es par.",
+      "answer": "si n=2k entonces n^2=(2k)^2=4k^2=2(2k^2) que es par"
+    },
+    {
+      "id": 6,
+      "level": "pi=3",
+      "title": "Ecuación lineal",
+      "statement": "Resolvé 2(x-3) = 5x + 1 mostrando QUÉ propiedad usás en cada paso.",
+      "answer": "2x-6=5x+1 distributiva, -6-1=5x-2x pasaje terminos, -7=3x, x=-7/3"
+    },
+    {
+      "id": 7,
+      "level": "pi=3",
+      "title": "División por cero",
+      "statement": "¿Por qué no se puede dividir por 0? Explicá con un ejemplo concreto.",
+      "answer": "si 5/0=x entonces 5=0*x=0 contradiccion, division por 0 indefinida"
+    },
+    {
+      "id": 8,
+      "level": "pi=3",
+      "title": "Suma de tres impares",
+      "statement": "Demostrá que la suma de tres números impares consecutivos es siempre múltiplo de 3.",
+      "answer": "sean 2k+1, 2k+3, 2k+5 suma (2k+1)+(2k+3)+(2k+5)=6k+9=3(2k+3)"
+    },
+    {
+      "id": 9,
+      "level": "pi=3",
+      "title": "Factorización",
+      "statement": "Factorizá x² - 9 y explicá QUÉ propiedad usaste.",
+      "answer": "x^2-9=(x+3)(x-3) diferencia de cuadrados"
+    },
+    {
+      "id": 10,
+      "level": "pi=3",
+      "title": "Definición de raíz cuadrada",
+      "statement": "¿Qué significa exactamente √2? (No digas 'es 1.414...', da la definición matemática)",
+      "answer": "es el numero positivo x tal que x^2=2"
     }
   ],
   "pi=3.1": [
     {
-      "id": 4,
+      "id": 11,
       "level": "pi=3.1",
       "title": "Suma de impares",
-      "statement": "Demostrá que la suma de los primeros n números impares es n².",
+      "statement": "Demostrá por inducción que la suma de los primeros n números impares es n².",
       "answer": "induccion base n=1 paso sumar 2n+1"
     },
     {
-      "id": 5,
+      "id": 12,
       "level": "pi=3.1",
       "title": "Raíces enteras",
-      "statement": "Si x²-kx+4=0 tiene una solución entera, ¿qué valores enteros puede tomar k?",
+      "statement": "Si x²-kx+4=0 tiene solución entera, ¿qué valores puede tomar k? Justificá.",
       "answer": "5,4,-5,-4"
     },
     {
-      "id": 6,
+      "id": 13,
       "level": "pi=3.1",
       "title": "Negación lógica",
-      "statement": "Escribí la negación de: 'Para todo x, existe y tal que x+y=0'",
+      "statement": "Negá la siguiente proposición: 'Para todo x, existe y tal que x+y=0'.",
       "answer": "existe x para todo y x+y distinto 0"
+    },
+    {
+      "id": 14,
+      "level": "pi=3.1",
+      "title": "Sistema de ecuaciones",
+      "statement": "Resolvé el sistema 2x+3y=7, x-y=1 usando sustitución. Mostrá cada paso.",
+      "answer": "de x-y=1 sale x=y+1, reemplazo 2(y+1)+3y=7 entonces 5y+2=7 entonces y=1 x=2"
+    },
+    {
+      "id": 15,
+      "level": "pi=3.1",
+      "title": "Ecuación cuadrática",
+      "statement": "Resolvé x²-5x+6=0 usando factorización. Verificá tus soluciones.",
+      "answer": "(x-2)(x-3)=0 entonces x=2 o x=3 verificacion 4-10+6=0 y 9-15+6=0"
+    },
+    {
+      "id": 16,
+      "level": "pi=3.1",
+      "title": "Definición de función",
+      "statement": "¿Qué es una función? Da la definición precisa y un ejemplo de relación que NO sea función.",
+      "answer": "funcion asigna a cada x exactamente un y contraejemplo x^2+y^2=1 da dos y por x"
+    },
+    {
+      "id": 17,
+      "level": "pi=3.1",
+      "title": "Impar al cuadrado",
+      "statement": "Demostrá que si n es impar, entonces n² también es impar.",
+      "answer": "si n=2k+1 entonces n^2=(2k+1)^2=4k^2+4k+1=2(2k^2+2k)+1 que es impar"
+    },
+    {
+      "id": 18,
+      "level": "pi=3.1",
+      "title": "Completar cuadrado",
+      "statement": "Reescribí x²+6x+5 en la forma (x+a)²+b. Mostrá el proceso.",
+      "answer": "x^2+6x+5 = x^2+6x+9-9+5 = (x+3)^2-4"
+    },
+    {
+      "id": 19,
+      "level": "pi=3.1",
+      "title": "Números irracionales",
+      "statement": "¿Qué es un número irracional? Da un ejemplo y explica por qué NO es racional.",
+      "answer": "numero que no se puede escribir como fraccion p/q ejemplo raiz 2 no es p/q"
+    },
+    {
+      "id": 20,
+      "level": "pi=3.1",
+      "title": "Inecuaciones",
+      "statement": "Resolvé la inecuación 3x - 5 > 2x + 1 y explicá cada paso.",
+      "answer": "3x-2x > 1+5 pasaje terminos x > 6"
     }
   ],
   "pi=3.14": [
     {
-      "id": 7,
+      "id": 21,
       "level": "pi=3.14",
       "title": "Desigualdad AM-GM",
-      "statement": "Demostrá que para a,b > 0, se cumple (a+b)/2 ≥ √(ab)",
-      "answer": "(a-b)²≥0 entonces (a+b)²≥4ab"
+      "statement": "Demostrá que para a,b > 0: (a+b)/2 ≥ √(ab)",
+      "answer": "(a-b)^2>=0 entonces (a+b)^2>=4ab"
     },
     {
-      "id": 8,
+      "id": 22,
       "level": "pi=3.14",
       "title": "Diagonales del pentágono",
-      "statement": "¿Cuántas diagonales tiene un pentágono? Justificá.",
+      "statement": "¿Cuántas diagonales tiene un pentágono? Justificá tu respuesta.",
       "answer": "5"
     },
     {
-      "id": 9,
+      "id": 23,
       "level": "pi=3.14",
       "title": "Principio del palomar",
-      "statement": "En un grupo de 13 personas, al menos 2 cumplen años el mismo mes. ¿Por qué?",
+      "statement": "Si hay 13 personas en una habitación, demostrá que al menos 2 cumplen años en el mismo mes.",
       "answer": "13 personas 12 meses palomar"
     }
   ],
   "pi=3.141": [
     {
-      "id": 10,
+      "id": 24,
       "level": "pi=3.141",
       "title": "Infinitos primos",
       "statement": "Demostrá que existen infinitos números primos.",
       "answer": "euclides suponer finitos N=producto+1"
     },
     {
-      "id": 11,
+      "id": 25,
       "level": "pi=3.141",
       "title": "√2 irracional",
-      "statement": "Demostrá que √2 no se puede escribir como fracción p/q con p,q enteros.",
+      "statement": "Demostrá que √2 no puede expresarse como fracción.",
       "answer": "contradiccion p/q irreducible entonces p par q par"
     },
     {
-      "id": 12,
+      "id": 26,
       "level": "pi=3.141",
       "title": "Suma de ángulos",
-      "statement": "Demostrá que la suma de ángulos internos de un triángulo es 180°.",
+      "statement": "Demostrá que los ángulos internos de un triángulo suman 180°.",
       "answer": "paralela angulos alternos internos"
     }
   ],
   "pi=3.1415": [
     {
-      "id": 13,
+      "id": 27,
       "level": "pi=3.1415",
       "title": "Construcción de ℤ",
-      "statement": "Explicá cómo construir los enteros negativos a partir de los naturales usando pares ordenados.",
+      "statement": "Explicá cómo construir los números enteros negativos a partir de los naturales usando pares ordenados.",
       "answer": "(a,b) representa a-b equivalencia"
     },
     {
-      "id": 14,
+      "id": 28,
       "level": "pi=3.1415",
       "title": "Límite 1/n→0",
-      "statement": "Demostrá que lim(n→∞) 1/n = 0 usando la definición ε-N para sucesiones.",
+      "statement": "Demostrá usando la definición ε-N que lim(n→∞) 1/n = 0.",
       "answer": "dado epsilon tomar N>1/epsilon"
     },
     {
-      "id": 15,
+      "id": 29,
       "level": "pi=3.1415",
       "title": "Cardinalidad ℕ vs pares",
       "statement": "¿Hay la misma cantidad de números naturales que de números pares? Justificá.",
