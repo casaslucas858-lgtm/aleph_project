@@ -1,4 +1,4 @@
-# ALEPH Project
+v0.1, SOLO documentación, este repo no tendrá actualizaciones futuras# ALEPH Project
 
 **Plataforma de matemáticas competitivas con énfasis en rigor formal y demostración.**
 
